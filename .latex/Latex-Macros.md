@@ -1,0 +1,18 @@
+---
+header-includes:
+- \usepackage{amssymb,amsthm}
+- \usepackage[sans]{dsfont}
+- \usepackage{mathpartir}
+- \usepackage[all,cmtip]{xy}
+- \theoremstyle{definition}
+- \newcommand\noop[1]{#1}
+- \noop{\newtheorem{thm}{Theorem}}
+- \noop{\newtheorem{lemma}[thm]{Lemma}}
+- \noop{\newtheorem{defn}[thm]{Definition}}
+- \noop{\newtheorem{rmk}[thm]{Remark}}
+- \noop{\newtheorem{cor}[thm]{Corollary}}
+- \newcommand{\bbf}[1]{\mathds{#1}}
+- \newcommand{\N}{\bbf{N}}
+- \newcommand{\car}{\texttt{car}}
+- \newcommand{\cdr}{\texttt{cdr}}
+---

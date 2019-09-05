@@ -1,4 +1,5 @@
 ---
+toc: true
 header-includes:
 - \usepackage{amssymb,amsthm}
 - \usepackage[sans]{dsfont}
@@ -15,4 +16,11 @@ header-includes:
 - \newcommand{\N}{\bbf{N}}
 - \newcommand{\car}{\texttt{car}}
 - \newcommand{\cdr}{\texttt{cdr}}
+- \newcommand{\ttt}[1]{\texttt{#1}}
+- \newcommand{\rto}{\rightarrow}
+- \newcommand{\labst}[2]{\lambda{#1}.\ {#2}}
+- \newcommand{\labstt}[3]{\lambda ({#1}:{#2}).\ {#3}}
+- \newcommand{\rec}{\operatorname{rec}}
+- \newcommand{\pr}{\operatorname{pr}}
+- \newcommand{\jdef}{:\equiv}
 ---

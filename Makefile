@@ -3,7 +3,7 @@ PANDOC = pandoc # .cabal-sandbox/bin/pandoc
 
 PANDOC_INCLUDES = .latex/Latex-Macros.md
 PANDOC_DIRECTIVES = --variable=indent
-SUBDIRS = $(wildcard */)
+SUBDIRS = ./ $(wildcard */)
 SOURCES = $(wildcard $(addsuffix *.md, $(SUBDIRS)))
 OBJ = $(patsubst %.md, %.pdf, $(SOURCES))
 

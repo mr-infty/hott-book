@@ -1,5 +1,4 @@
 ---
-toc: true
 header-includes:
 - \usepackage{amssymb,amsthm}
 - \usepackage[sans]{dsfont}

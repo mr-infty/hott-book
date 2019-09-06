@@ -4,6 +4,7 @@ header-includes:
 - \usepackage[sans]{dsfont}
 - \usepackage{mathpartir}
 - \usepackage[all,cmtip]{xy}
+- \usepackage{todonotes}
 - \theoremstyle{definition}
 - \newcommand\noop[1]{#1}
 - \noop{\newtheorem{thm}{Theorem}}
@@ -20,6 +21,7 @@ header-includes:
 - \newcommand{\labst}[2]{\lambda{#1}.\ {#2}}
 - \newcommand{\labstt}[3]{\lambda ({#1}:{#2}).\ {#3}}
 - \newcommand{\rec}{\operatorname{rec}}
+- \newcommand{\Srec}[2]{\rec_{\Sigma_{\ttt{x}:{#1}} {#2}(\ttt{x})}}
 - \newcommand{\pr}{\operatorname{pr}}
 - \newcommand{\jdef}{:\equiv}
 ---

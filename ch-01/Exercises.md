@@ -18,7 +18,10 @@ Although not explicitly asked for, let us first derive the typing judgement
 $g\circ f : A \rightarrow C$ before we derive the (judgemental) associativity.
 To make this more fun^[Contrary to intuition, the fun of doing mathematics in
 type theory lies (for me at least) in *actually doing things formally*,
-preferrably on a computer, rather than merely asserting that that's possible.],
+**preferrably on a computer**, rather than merely asserting that that's possible. Note
+that the apparent awkwardness that lies in doing mathematics formally is the
+same awkwardness that lies in writing down computer programs using "pen and
+paper"; both activities are only joyful when done one a computer.],
 let's do this formally, using the derivation rules presented in the Appendix (A.2).
 
 Before we start doing this however, some remarks are in order. Even though the
@@ -97,7 +100,7 @@ $\equiv$-sign.
 
 Note that replacing a subterm by something that's judgementally
 equal to it results in a term that's still judgementally equal to the original
-term; this follows from the rule $\text{Subst}_2$ in A.2.2.
+term; this follows \todo{Actually, it doesn't: we need congruence!} from the rule $\text{Subst}_2$ in A.2.2.
 
 Finally note that the application of the rules in A.2 usually requires some
 typing judgement as a premise; we will therefore make implicit use of the rule
@@ -157,3 +160,52 @@ using the projections
 as
 
 $$\rec_{A\times B}(C, g, p) \jdef g(\pr_1(p), \pr_2(p)).$$
+
+To verify the definitional equation (i.e. computational rule)
+
+$$\rec_{A\times B}(C, g, (a, b)) \equiv g(a)(b)$$
+as well as the equations
+
+\begin{align*}
+   \pr_1 & \equiv \rec_{A\times B}(A,
+   \labst{\ttt{a}}{\labst{\ttt{b}}{\ttt{a}}}) \\
+   \pr_2 & \equiv \rec_{A\times B}(A,
+   \labst{\ttt{a}}{\labst{\ttt{b}}{\ttt{b}}}),
+\end{align*}
+we proceed as in the solution of exercise 1.1, by rewriting both sides of the
+relevant judgemental equation, one side at a time, indicating the subterm
+that's being rewritten as well as the derivational rule being used in that
+rewrite step.
+
+\begin{align*}
+\underline{\rec_{A\times B}(C, g, (a, b))} & \equiv g(a)(b) \\
+   &\text{\footnotesize(definition)} \\
+   g(\underline{\pr_1((a,b))}, \underline{\pr_2((a,b))}) & \equiv g(a)(b) \\
+   &\text{\footnotesize(comp. rule for $\pr$)} \\
+   \underline{g(a, b)} & \equiv g(a)(b) \\
+   &\text{\footnotesize(definition)} \\
+   g(a)(b) & \equiv g(a)(b)
+\end{align*}
+
+\begin{align*}
+   \pr_1 & \equiv \underline{\rec_{A\times B}(A, \labst{\ttt{a}}{\labst{\ttt{b}}{\ttt{a}}})} \\
+   &\text{\footnotesize(definition)} \\
+   \pr_1 & \equiv
+   \labst{\ttt{p}}{\underline{(\labst{\ttt{a}}{\labst{\ttt{b}}{\ttt{a}}})(\pr_1(\ttt{p}), \pr_2(\ttt{p}))}} \\
+   &\text{\footnotesize(definition)} \\
+   \pr_1 & \equiv \labst{\ttt{p}}{\underline{(\labst{\ttt{a}}{\labst{\ttt{b}}{\ttt{a}}})(\pr_1(\ttt{p}))}(\pr_2(\ttt{p}))} \\
+   &\text{\footnotesize($\Pi$-COMP)} \\
+   \pr_1 & \equiv \labst{\ttt{p}}{\underline{(\labst{\ttt{b}}{\pr_1(\ttt{p})})(\pr_2(\ttt{p}))}} \\
+   &\text{\footnotesize($\Pi$-COMP)} \\
+   \pr_1 & \equiv \underline{\labst{\ttt{p}}{\pr_1(\ttt{p})}} \\
+   &\text{\footnotesize($\Pi$-UNIQ)} \\
+   \pr_1 & \equiv \pr_1
+\end{align*}
+Similarly, by rewriting one can reduce the equation for $\pr_2$ to the
+tautology $\pr_2 \equiv \pr_2$.
+
+Now let's do this whole shebang for $\Sigma$-types. As before, we define
+$$\Srec{A}{B} : \prod_{C:\mathcal{U}} \left(\prod_{\ttt{x} : A} B(\ttt{x})
+\rto C\right) \rto \left(\sum_{\ttt{x} : A} B(\ttt{x})\right) \rto C$$
+by
+$$\Srec{A}{B}(C, g, p) \jdef g(\pr_1(p), \pr_2(p)).$$

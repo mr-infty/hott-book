@@ -100,7 +100,7 @@ $\equiv$-sign.
 
 Note that replacing a subterm by something that's judgementally
 equal to it results in a term that's still judgementally equal to the original
-term; this follows \todo{Actually, it doesn't: we need congruence!} from the rule $\text{Subst}_2$ in A.2.2.
+term; this follows from the fact^[Actually, it's not entirely clear whether this holds true for the rules given in appendix A.2; see issue #0.] that judgemental equality is a congruence relation with respect to eliminators (and constructors) of types.
 
 Finally note that the application of the rules in A.2 usually requires some
 typing judgement as a premise; we will therefore make implicit use of the rule

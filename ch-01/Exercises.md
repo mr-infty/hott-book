@@ -1,5 +1,7 @@
 ---
 toc: true
+header-includes:
+- \usepackage{textcomp}
 ---
 
 # Exercises Chapter One
@@ -21,7 +23,7 @@ type theory lies (for me at least) in *actually doing things formally*,
 **preferrably on a computer**, rather than merely asserting that that's possible. Note
 that the apparent awkwardness that lies in doing mathematics formally is the
 same awkwardness that lies in writing down computer programs using "pen and
-paper"; both activities are only joyful when done one a computer.],
+paper"; both activities are only joyful when done on a computer.],
 let's do this formally, using the derivation rules presented in the Appendix (A.2).
 
 Before we start doing this however, some remarks are in order. Even though the
@@ -84,7 +86,10 @@ $\text{$\Pi$-FORM}$ to the two judgements
 
 $$A : \mathcal{U}_0, \quad B : \mathcal{U}_0.$$
 
-Let us now prove the judgemental associativity
+Let us now prove the judgemental associativity^[Here and in the following, we
+will often abbreviate equality judgements like $a \equiv b : B$ by suppressing
+the type $B$ in the notation. Note however, that the type really is an integral
+part of equality judgements in Martin-Löf type theory.]
 
 $$h \circ (g \circ f) \equiv (h \circ g) \circ f,$$
 
@@ -95,8 +100,7 @@ $$\labstt{\ttt{x}}{A}{h(\labstt{\ttt{x}}{A}{g(f(\ttt{x}))}(\ttt{x}))} \equiv \la
 We will do this by rewriting both sides of the equation (one side at a time),
 meaning that in each step we replace a subterm---indicated by underlining---with
 another one that can be proved to be judgementally equal to it via one of the
-rules of appendix A.2. The rule being used will be indicated above the
-$\equiv$-sign.
+rules of appendix A.2. The rule being used will be indicated below.
 
 Note that replacing a subterm by something that's judgementally
 equal to it results in a term that's still judgementally equal to the original
@@ -150,7 +154,8 @@ With that being said, we can define
 $$\rec_{A\times B} : \prod_{C:\mathcal{U}} (A \rto B \rto C) \rto A\times
 B \rto C$$
 
-using the projections
+using the projections^[the types $A$, $B$ are suppressed in the notation, but
+$\pr_1$ should be read as $\pr_1(A)(B)$]
 
 \begin{align*}
 \pr_1 & : A \times B \rto A \\
@@ -209,3 +214,127 @@ $$\Srec{A}{B} : \prod_{C:\mathcal{U}} \left(\prod_{\ttt{x} : A} B(\ttt{x})
 \rto C\right) \rto \left(\sum_{\ttt{x} : A} B(\ttt{x})\right) \rto C$$
 by
 $$\Srec{A}{B}(C, g, p) \jdef g(\pr_1(p), \pr_2(p)).$$
+The computational rule for the $\Sigma$-recursor is then proven by the same
+formal calculation as before.
+\begin{align*}
+   \underline{\Srec{A}{B}(C, g, (a, b))} & \equiv g(a)(b) \\
+   &\text{\footnotesize(definition)} \\
+   g(\underline{\pr_1((a,b))}, \underline{\pr_2((a,b))}) & \equiv g(a)(b) \\
+   &\text{\footnotesize(comp. rule for $\pr$)} \\
+   \underline{g(a, b)} & \equiv g(a)(b) \\
+   &\text{\footnotesize(definition)} \\
+   g(a)(b) & \equiv g(a)(b)
+\end{align*}
+The only thing to note here is that in order to justify the application of
+these various derivational rules, we also need to derive the necessary typing
+judgements appearing the context(s) of a rule.
+
+\begin{center} \textbf{--------- A tangent ---------} \end{center}
+
+Just to make things clear, let's spell out what the above formal calculation
+is supposed to mean, and how the typing judgements enter.
+In the last line, we have arrived at a "judgement", which is meant to
+abbreviate the following judgement in Martin-Löf type theory.
+
+$$A : \mathcal{U}, B : A \rightarrow \mathcal{U}, C : \mathcal{U},
+ g : \prod_{\ttt{x}:A} B(\ttt{x}) \rto C, a : A, b : B(a) \vdash g(a)(b) \equiv g(a)(b) : C$$
+The only problem is that this doesn't make any sense since $A,B,C,g,a,b$ were taken to be
+*meta-theoretical* variables that stand for some arbitrary *terms* in the object language.
+But, by definition a context must be of the form
+$$x_1 : A_1, x_2 : A_2, \ldots, x_n : A_n$$
+for some pair-wise distinct *variables* $x_i$ in the object language.
+
+However, we can repair this in one of two ways. The first way would be to keep
+the meta-variables but introduce a context $\Delta$, making the
+meta-theoretical assumption that the judgements
+\begin{align*}
+\Delta & \vdash A : \mathcal{U} \\
+\Delta & \vdash B : A \rto \mathcal{U} \\
+\Delta & \vdash C : \mathcal{U} \\
+\Delta & \vdash g : \prod_{\ttt{x}:A} B(x) \\
+\Delta & \vdash a : A \\
+\Delta & \vdash b : B(a)
+\end{align*}
+are derivable; in this case, our claim would be that the judgement
+$$\Delta \vdash g(a)(b) \equiv g(a)(b) : C$$
+is also derivable.
+
+The second way would be to replace the meta-variables $A,B,C,g,a,b$ by
+object-variables $\ov{A}, \ov{B}, \ov{C}, \ov{g}, \ov{a}, \ov{b}$. Then
+$$\ov{A} : \mathcal{U}, \ov{B} : \ov{A} \rightarrow \mathcal{U}, \ov{C} : \mathcal{U},
+ \ov{g} : \prod_{\ttt{x}:\ov{A}} \ov{B}(\ttt{x}) \rto \ov{C}, \ov{a} : \ov{A}, \ov{b} : \ov{B}(\ov{a}) \vdash \ov{g}(\ov{a})(\ov{b}) \equiv \ov{g}(\ov{a})(\ov{b}) : \ov{C}$$
+is a well-formed judgement.
+
+Now in either case, the "judgement" with which we end is tautological^[but not
+trivial, as it implicitly contains the typing "judgement" $g(a)(b) : C$] and derivable in "the obvious way\texttrademark", which is why our formal calculation ends there.
+
+By using the transitivity rule
+$$\inferrule{\Gamma \vdash a \equiv b : A \\ \Gamma \vdash b \equiv
+c : A}{\Gamma \vdash a \equiv c : A},$$
+we then successively derive the judgements from bottom to top using the
+equality judgements between the left resp. right sides of two consecutive
+lines. For example, to get from the bottom line to the third line, we apply
+transitivity to the "judgements"
+$$g(a)(b) \equiv g(a)(b) \quad\text{and}\quad g(a,b) \equiv g(a)(b);$$
+of course in this case, the application of transitivity is trivial because what
+we derive is already assumed. Similarly, to get from the third to the second
+line, we use transitivity on
+$$g(a,b) \equiv g(a)(b) \quad\text{and}\quad g(\pr_1((a,b)),\pr_2((a,b)))
+\equiv g(a,b).$$
+
+Justifying the "definitional" equality
+$$g(a,b) \equiv g(a)(b)$$
+(disregarding for a moment the problem of interpreting this "judgement" as an actual judgement in
+type theory) is a bit tricky. Now of course, this should be trivial, but to really justify
+*why* (and *how*^[i.e. in which theory, the object theory or some meta theory, this equation should hold]) it's trivial, we must be explicit about the syntax of terms and
+types. This is tedious (and not completely straightforward), so you'll have
+a hard time finding any source where this is done (in the HoTT book, there's
+a *sketch* for the version of type theory presented in appendix A.1 though).
+
+For example, you have to decide whether you actually want $g(a,b)$ to be a term
+in your syntax, i.e. whether you want to have two different ways to write
+function application. You probably don't, because you want to be your type
+theory to be clean and easy to reason about. Let us therefore agree that
+$g(a,b)$ is "notation" in the sense that the reader is supposed to substitute
+with $g(a)(b)$ *before* even trying to interpret it as a judgement of
+Martin-Löf type theory. In other words, when we write down things, we use
+another (higher-level) language that should be "compiled down" to actual
+Martin-Löf type theory.
+
+Implicit in this convention is the assumption that the
+"rewrite system" defined by the "notational convention"
+$$f(a_1,\ldots,a_n) \equiv f(a_1)\ldots (a_n)$$
+is *terminating* and *confluent* (i.e. *convergent*), i.e. that by applying
+this rule repeatedly in any way, we will always arrive at a term which doesn't
+have $k$-ary function application terms as subterms with $k \geq 2$ after a
+finite number of steps, and irrespective of the way we do it, we always end up
+with the same term. For example, we can rewrite $g(a,b)(c,d)$ as
+
+$$\underline{g(a,b)}(c,d) \leadsto \underline{g(a)(b)(c,d)} \leadsto
+g(a)(b)(c)(d)$$
+or as
+
+$$\underline{g(a,b)(c,d)} \leadsto \underline{g(a,b)}(c)(d) \leadsto
+g(a)(b)(c)(d),$$
+both leading to the same normal form $g(a)(b)(c)(d)$. This seems obvious but
+still requires proof. In particular, if we add more such conventions.
+
+Let us not deal with these "implementation details" and instead just assume
+that everything works out fine. The above formal computation then collapses to
+
+\begin{align*}
+   \underline{\Srec{A}{B}(C, g, (a, b))} & \equiv g(a)(b) \\
+   &\text{\footnotesize(definition)} \\
+   g(\underline{\pr_1((a,b))}, \underline{\pr_2((a,b))}) & \equiv g(a)(b) \\
+   &\text{\footnotesize(comp. rule for $\pr$)} \\
+   \underline{g(a)(b)} & \equiv g(a)(b) \\
+   &\text{\footnotesize(definition)} \\
+   g(a)(b) & \equiv g(a)(b).
+\end{align*}
+
+Ignoring the last, now trivial step, let us show in detail how you get from the
+third to the second "judgement". To be concrete, let us interpret these
+"judgements" as judgements using the object-variable fix. The derivation goes
+as follows.
+TODO
+\begin{center} \textbf{--------- End of tangent ---------} \end{center}

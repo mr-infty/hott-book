@@ -17,6 +17,7 @@ header-includes:
 - \newcommand{\car}{\texttt{car}}
 - \newcommand{\cdr}{\texttt{cdr}}
 - \newcommand{\ttt}[1]{\texttt{#1}}
+- \newcommand{\ov}[1]{\ttt{#1}}
 - \newcommand{\rto}{\rightarrow}
 - \newcommand{\labst}[2]{\lambda{#1}.\ {#2}}
 - \newcommand{\labstt}[3]{\lambda ({#1}:{#2}).\ {#3}}

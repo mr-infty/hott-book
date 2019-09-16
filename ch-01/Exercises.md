@@ -225,21 +225,19 @@ formal calculation as before.
    &\text{\footnotesize(definition)} \\
    g(a)(b) & \equiv g(a)(b)
 \end{align*}
-The only thing to note here is that in order to justify the application of
-these various derivational rules, we also need to derive the necessary typing
-judgements appearing the context(s) of a rule.
 
 \begin{center} \textbf{--------- A tangent ---------} \end{center}
 
 Just to make things clear, let's spell out what the above formal calculation
-is supposed to mean, and how the typing judgements enter.
+is supposed to mean.
 In the last line, we have arrived at a "judgement", which is meant to
 abbreviate the following judgement in Martin-Löf type theory.
 
 $$A : \mathcal{U}, B : A \rightarrow \mathcal{U}, C : \mathcal{U},
  g : \prod_{\ttt{x}:A} B(\ttt{x}) \rto C, a : A, b : B(a) \vdash g(a)(b) \equiv g(a)(b) : C$$
-The only problem is that this doesn't make any sense since $A,B,C,g,a,b$ were taken to be
-*meta-theoretical* variables that stand for some arbitrary *terms* in the object language.
+This is pretty obvious. However, there is a slight problem with this. Namely,
+this is *not* a well-formed judgement in Martin-Löf type theory because $A,B,C,g,a,b$ were taken to be
+*meta-theoretical* variables standing for arbitrary *terms* in the object language.
 But, by definition a context must be of the form
 $$x_1 : A_1, x_2 : A_2, \ldots, x_n : A_n$$
 for some pair-wise distinct *variables* $x_i$ in the object language.
@@ -323,9 +321,9 @@ Let us not deal with these "implementation details" and instead just assume
 that everything works out fine. The above formal computation then collapses to
 
 \begin{align*}
-   \underline{\Srec{A}{B}(C, g, (a, b))} & \equiv g(a)(b) \\
+   \underline{\Srec{A}{B}(C)(g)((a, b))} & \equiv g(a)(b) \\
    &\text{\footnotesize(definition)} \\
-   g(\underline{\pr_1((a,b))}, \underline{\pr_2((a,b))}) & \equiv g(a)(b) \\
+   g(\underline{\pr_1((a,b))})(\underline{\pr_2((a,b))}) & \equiv g(a)(b) \\
    &\text{\footnotesize(comp. rule for $\pr$)} \\
    \underline{g(a)(b)} & \equiv g(a)(b) \\
    &\text{\footnotesize(definition)} \\
@@ -334,7 +332,51 @@ that everything works out fine. The above formal computation then collapses to
 
 Ignoring the last, now trivial step, let us show in detail how you get from the
 third to the second "judgement". To be concrete, let us interpret these
-"judgements" as judgements using the object-variable fix. The derivation goes
-as follows.
-TODO
+"judgements" as judgements using the object-variable fix.
+
+The derivation---which we write in linear form because writing it as a tree would
+be a total mess---goes as follows, where we abbreviate
+
+$$\Delta = \ov{A} : \mathcal{U}, \ov{B} : \ov{A} \rightarrow \mathcal{U}, \ov{C} : \mathcal{U},
+ \ov{g} : \prod_{\ttt{x}:\ov{A}} \ov{B}(\ttt{x}) \rto \ov{C}, \ov{a} : \ov{A}, \ov{b} : \ov{B}(\ov{a}).$$
+
+\begin{align*}
+\text{(1)} && \Delta & \vdash \ov{g}(\ov{a})(\ov{b}) \equiv \ov{g}(\ov{a})(\ov{b}) : \ov{C} && \\
+\text{(2)} && \Delta & \vdash \pr_1((\ttt{a},\ttt{b})) \equiv \ttt{a} : \ttt{A} && \text{comp. rule for $\pr$ (and $\text{Wkg}_1$)} \\
+\text{(3)} && \Delta & \vdash \pr_2((\ttt{a},\ttt{b})) \equiv \ttt{b} : \ttt{B}(\ttt{a}) && \text{comp. rule for $\pr$ (and $\text{Wkg}_1$)} \\
+\text{(4)} && \Delta & \vdash \ov{g}(\ov{a}) \equiv
+\ov{g}(\pr_1((\ov{a},\ov{b}))) : \ov{B}(\ov{a}) \rto C && \text{congruence on
+(2)} \\
+\text{(5)} && \Delta & \vdash \ov{g}(\ov{a})(\pr_2((\ov{a},\ov{b}))) \equiv
+\ov{g}(\ov{a})(\ov{b}) : \ov{C} && \text{congruence on (3)} \\
+\text{(6)} && \Delta & \vdash \ov{g}(\ov{a})(\pr_2((\ov{a},\ov{b}))) \equiv
+\ov{g}(\pr_1((\ov{a},\ov{b})))(\pr_2((\ov{a},\ov{b}))) : C && \text{congruence
+on (4)} \\
+\text{(7)} && \Delta & \vdash \ov{g}(\pr_1((\ov{a},\ov{b})))(\pr_2((\ov{a},\ov{b}))) \equiv
+\ov{g}(\ov{a})(\pr_2((\ov{a},\ov{b}))) : C && \text{$\equiv$-symmetry on (6)} \\
+\text{(8)} && \Delta & \vdash \ov{g}(\pr_1((\ov{a},\ov{b})))(\pr_2((\ov{a},\ov{b}))) \equiv \ov{g}(\ov{a})(\ov{b}) : C && \text{$\equiv$-transitivity on (5) and (7)} \\
+\text{(9)} && \Delta & \vdash \ov{g}(\pr_1((\ov{a},\ov{b})))(\pr_2((\ov{a},\ov{b}))) \equiv \ov{g}(\ov{a})(\ov{b}) : C && \text{$\equiv$-transitivity on (1) and (8)}
+\end{align*}
+
+Since the judgement with which we start is tautological, the last step of this
+derivation is of course superfluous; it's only included here to preserve the
+form of the argument in the general case.
+
+The *congruence rules* alluded to in the above derivation are the following,
+which aren't explicitly stated in appendix A.2 but (perhaps) alluded to in the
+remark at the end of A.2.2 ("Additionally [...] we assume rules stating that
+each constructor preserves definitional equality...").
+
+$$\inferrule{\Gamma \vdash A:\mathcal{U} \\ \Gamma \vdash B : A \rto
+\mathcal{U} \\ \Gamma \vdash f : \PiType{A}{B} \\ \Gamma \vdash a \equiv a' : A}{\Gamma \vdash f(a) \equiv f(a') : B(a)}$$
+
+$$\inferrule{\Gamma \vdash A:\mathcal{U} \\ \Gamma \vdash B : A \rto
+\mathcal{U} \\ \Gamma \vdash a : A \\ \Gamma \vdash f \equiv f' : \PiType{A}{B}}{\Gamma \vdash f(a) \equiv f'(a) : B(a)}.$$
+
+From the first rule, one can derive the following as a special case: 
+
+$$\inferrule{\Gamma \vdash A:\mathcal{U} \\ \Gamma \vdash B : A \rto
+\mathcal{U} \\ \Gamma \vdash a \equiv a' : A}{\Gamma \vdash B(a) \equiv B(a') : \mathcal{U}}.$$
+
 \begin{center} \textbf{--------- End of tangent ---------} \end{center}
+

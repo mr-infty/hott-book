@@ -1,6 +1,6 @@
 ---
 header-includes:
-- \usepackage{amssymb,amsthm}
+- \usepackage{amsmath,amssymb,amsthm}
 - \usepackage[sans]{dsfont}
 - \usepackage{mathpartir}
 - \usepackage[all,cmtip]{xy}
@@ -23,6 +23,7 @@ header-includes:
 - \newcommand{\labstt}[3]{\lambda ({#1}:{#2}).\ {#3}}
 - \newcommand{\rec}{\operatorname{rec}}
 - \newcommand{\Srec}[2]{\rec_{\Sigma_{\ttt{x}:{#1}} {#2}(\ttt{x})}}
+- \newcommand{\PiType}[2]{\prod_{\ov{x}:{#1}} {#2}(\ov{x})}
 - \newcommand{\pr}{\operatorname{pr}}
 - \newcommand{\jdef}{:\equiv}
 ---

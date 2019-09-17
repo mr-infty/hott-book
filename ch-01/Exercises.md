@@ -169,7 +169,8 @@ $$\rec_{A\times B}(C, g, p) \jdef g(\pr_1(p), \pr_2(p)).$$
 To verify the definitional equation (i.e. computational rule)
 
 $$\rec_{A\times B}(C, g, (a, b)) \equiv g(a)(b)$$
-as well as the equations
+as well as the equations^[we suppress the type annotation in the lambda
+abstractions below, for better readability]
 
 \begin{align*}
    \pr_1 & \equiv \rec_{A\times B}(A,
@@ -380,3 +381,77 @@ $$\inferrule{\Gamma \vdash A:\mathcal{U} \\ \Gamma \vdash B : A \rto
 
 \begin{center} \textbf{--------- End of tangent ---------} \end{center}
 
+Similarly, one "proves" the equations
+
+\begin{align*}
+   \pr_1 & \equiv \Srec{A}{B}(A, \labst{\ov{a}}{\labst{\ov{b}}{\ov{a}}}) \\
+   \pr_2 & \equiv \Srec{A}{B}(B, \labst{\ov{a}}{\labst{\ov{b}}{\ov{b}}})
+\end{align*}
+
+using the exact same formal calculation as before.
+
+## Exercise 1.3
+> Derive the induction principle for products $\IndProd{A}{B}$ using only
+> the projections and the propositional uniqueness principle $\UniqProd{A}{B}$.
+> Verify that the definitional equalities are valid. Generalize
+> $\UniqProd{A}{B}$ to $\Sigma$-types, and do the same for $\Sigma$-types.
+> *(This requires concepts from Chapter 2.)*
+
+* * *
+The obvious way to define
+
+$$\IndProd{A}{B}: \prod_{C : A \times B \rto \UV}
+\left(\ProdTypeV{x}{A}{\ProdTypeV{y}{B}{C((\ov{x},\ov{y}))}}\right) \rto \PiType{A
+\times B}{C}$$
+would be to put
+
+$$\IndProd{A}{B} \jdef
+\labst{\ov{C}}{\labst{\ov{g}}{\labst{\ov{x}}{\ov{g}(\pr_1(\ov{x}),
+\pr_2(\ov{x}))}}}.$$
+However, this isn't well-typed, as we have
+
+$$\ov{g}(\pr_1(\ov{x}), \pr_2(\ov{x})) : C((\pr_1(\ov{x}), \pr_2(\ov{x})))$$
+and without the *judgemental* uniqueness $\ov{x} \equiv
+(\pr_1(\ov{x}),\pr_2(\ov{x}))$ cannot derive the desired typing judgement
+$$\ov{g}(\pr_1(\ov{x}), \pr_2(\ov{x})) : C(\ov{x}).$$
+Given only *propositional* uniqueness
+
+$$\UniqProd{A}{B}: \ProdTypeV{x}{A\times B}{((\pr_1(\ov{x}), \pr_2(\ov{x}))
+=_{A\times B} \ov{x})},$$
+the type needs to be changed explicitly in the definition of
+$\IndProd{A}{B}$.
+
+There are several ways to do this, all of which involve path induction^[It
+isn't actually possible to define the induction principle using *only*
+projections and propositional uniqueness; in this sense, the exercise is stated
+incorrectly.]. The most intuitive way is to use *transport*^[The
+"concept(s) from Chapter 2" alluded to in the statement of the exercise.]
+
+$$\tp^C(\UniqProd{A}{B}(\ov{x}), \--) : C((\pr_1(\ov{x}), \pr_2(\ov{x}))) \rto
+C(\ov{x}),$$
+
+putting
+
+$$\IndProd{A}{B} \jdef
+\labst{\ov{C}}{\labst{\ov{g}}{\labst{\ov{x}}{\tp^C(\UniqProd{A}{B}(\ov{x}) , \ov{g}(\pr_1(\ov{x}),
+\pr_2(\ov{x})))}}}.$$
+However, I won't do this, because you can also define it using simple *based* path
+induction, hence staying in the realm of the material developed in chapter one.
+
+So instead, we put
+
+$$\IndProd{A}{B} \jdef
+\labst{\ov{C}}{\labst{\ov{g}}{\labst{\ov{x}}{\ind'_{A\times B}(\hat{a},
+\widehat{C}, \hat{c}, \ov{x}, \UniqProd{A}{B}(\ov{x}))}}},$$
+
+where we have abbreviated
+
+\begin{align*}
+\hat{a} & \equiv (\pr_1(\ov{x}), \pr_2(\ov{x})) \\
+\widehat{C} & \equiv \labst{\ov{y}}{\labst{\ov{p}}{\ov{C}(\ov{y})}} \\
+\hat{c} & \equiv \ov{g}(\pr_1(\ov{x}), \pr_2(\ov{x})).
+\end{align*}
+Of course you have to check that this is well-typed^[or rather, you'd want your
+type checker to check that]. The only thing of interest here is to note that
+$$\hat{c} : \widehat{C}(\hat{a},\refl_{\hat{a}})$$
+as required by the principle of based path induction.

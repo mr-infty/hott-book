@@ -455,3 +455,105 @@ Of course you have to check that this is well-typed^[or rather, you'd want your
 type checker to check that]. The only thing of interest here is to note that
 $$\hat{c} : \widehat{C}(\hat{a},\refl_{\hat{a}})$$
 as required by the principle of based path induction.
+
+Let us now verify the "defining" equation
+
+$$\IndProd{A}{B}(C,g,(a,b)) \equiv g(a)(b).$$
+We proceed by "formal calculation" as before.
+
+\begin{align*}
+\IndProd{A}{B}(C,g,(a,b)) & \equiv
+\left(\labst{\ov{C}}{\labst{\ov{g}}{\labst{\ov{x}}{\ind'_{A\times B}(\hat{a},\widehat{C},\hat{c},\ov{x},\UniqProd{A}{B}(\ov{x}))}}}\right)(C)(g)((a,b)) && \text{def.} \\
+& \equiv \ind'_{A\times B}((\pr_1((a,b)), \pr_2((a,b))), \labst{\ov{y}}{\labst{\ov{p}}{C(\ov{y})}}, && \text{$\beta$-red.} \\
+& g(\pr_1((a,b)), \pr_2((a,b))), (a,b), \UniqProd{A}{B}((a,b))) && \\
+& \equiv \ind'_{A\times B}((\pr_1((a,b)), \pr_2((a,b))), \labst{\ov{y}}{\labst{\ov{p}}{C(\ov{y})}}, && \text{comp. rule} \\
+& g(\pr_1((a,b)), \pr_2((a,b))), (a,b), \refl_{(a,b)}) && \text{for
+$\UniqProd{A}{B}$} \\
+& \equiv g(\pr_1((a,b)), \pr_2((a,b))) && \text{comp. rule for $\ind'$} \\
+& \equiv g(a,b) && \text{comp. rule for $\pr$}
+\end{align*}
+
+Let's now generalize all this to $\Sigma$-types (a.k.a. *dependent* products).
+The propositional uniqueness, which we assume to be given, is taken to be of
+type
+
+$$\uniq_{\SigmaType{A}{B}} : \prod_{\ov{p}:\SigmaType{A}{B}}
+((\pr_1(\ov{p}),\pr_2(\ov{p})) =_{\SigmaType{A}{B}} \ov{p}).$$
+
+The induction "principle" for $\Sigma$-types
+$$\IndDProd{A}{B}: \prod_{C : \left(\SigmaType{A}{B}\right) \rto \UV}
+\left(\prod_{\ov{a}:A} \prod_{\ov{b}:B(\ov{a})} C((\ov{a},\ov{b}))\right) \rto
+\PiTypeV{p}{\SigmaType{A}{B}}{C}$$
+
+can then be defined by the exact same formula as before
+
+$$\IndDProd{A}{B} \jdef
+\labst{\ov{C}}{\labst{\ov{g}}{\labst{\ov{x}}{\ind'_{A\times B}(\hat{a},
+\widehat{C}, \hat{c}, \ov{x}, \UniqDProd{A}{B}(\ov{x}))}}},$$
+
+where again
+
+\begin{align*}
+\hat{a} & \equiv (\pr_1(\ov{x}), \pr_2(\ov{x})) \\
+\widehat{C} & \equiv \labst{\ov{y}}{\labst{\ov{p}}{\ov{C}(\ov{y})}} \\
+\hat{c} & \equiv \ov{g}(\pr_1(\ov{x}), \pr_2(\ov{x})).
+\end{align*}
+
+The verification of the definitional equality/computation rule is also the
+same, so no need to repeat it here.
+
+## Exercise 1.4
+> Assuming as given only the *iterator* for natural numbers
+> $$\iter: \prod_{C:\UV} C \rto (C \rto C) \rto \N \rto C$$
+> with the defining equations
+> \begin{align*}
+> \iter(C,c_0,c_s,0) & \jdef c_0, \\
+> \iter(C,c_0,c_s,\suc(n)) & \jdef c_s(\iter(C, c_0, c_s, n)),
+> \end{align*}
+> derive a function having the type of the recursor $\rec_{\N}$. Show that the
+> defining equations of the recursor hold propositionally for this function,
+> using the induction principle for $\N$.
+
+* * *
+Recall that
+$$\rec_{\N}: \prod_{C:\UV} C \rto (\N \rto C \rto C) \rto \N \rto C$$
+with
+\begin{align*}
+   \rec_{\N}(C,c_0,c_s,0) & \equiv c_0 \\
+   \rec_{\N}(C,c_0,c_s,\suc(n)) & \equiv c_s(n, \rec_{\N}(C,c_0,c_s,n)).
+\end{align*}
+
+The obvious idea of how to derive the recursor from the iterator is to replace
+$C$ by the product type $\N \times C$ and replace the "recursion function"
+$c_s$ by the "iteration function" $(n,c) \mapsto (\suc(n),c_s(n,c))$.
+
+Thus, we define the sought-after function $r$ by
+
+$$r(C,c_0,c_s,n) \jdef \pr_2(\iter(\N \times C, (0, c_0),
+\labst{\ov{n}}{\labst{\ov{c}}{(\suc(\ov{n}), c_s(\ov{n}, \ov{c}))}}), n)).$$
+
+Intuitively, it seems clear that we should get the recursor equations for the function $r$, just
+by "looking" at this expression. However, this intuition is based on
+manipulating functions in set theory, and in particular doesn't account for the
+fact that lambda forms have no reason to respect judgemental equalities (we
+only require *congruence* for constructors and eliminators).
+
+Therefore, we can only show that these equations hold *propositionally*.
+Indeed, abbreviating
+
+$$f \jdef \labst{\ov{n}}{\labst{\ov{c}}{(\suc(\ov{n}), c_s(\ov{n},\ov{c}))}},$$
+we can calculate
+
+\begin{align*}
+r(C,c_0,c_s,\suc(n)) & \equiv \pr_2(\iter(\N \times C, (0, c_0), f, \suc(n))) \\
+& \equiv \pr_2(f(\iter(\N \times C, (0, c_0), f, n)))
+\end{align*}
+judgementally, but then cannot proceed any further for two reasons.
+
+First, we cannot derive the equation
+
+$$\iter(\N \times C, (0, c_0), f, n) \equiv (n, \pr_2(\iter(\N \times C, (0, c_0), f, n)))$$
+because we cannot *judgementally* conclude that
+$$\pr_1(\iter(\N \times C, (0, c_0), f, n) \equiv n.$$
+
+Second, even if we could, this equation wouldn't need to be respected by $f$.

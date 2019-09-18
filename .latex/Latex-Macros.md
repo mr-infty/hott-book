@@ -27,13 +27,19 @@ header-includes:
 - \newcommand{\uniq}{\operatorname{uniq}}
 - \newcommand{\tp}{\operatorname{transport}}
 - \newcommand{\refl}{\operatorname{refl}}
-- \newcommand{\Srec}[2]{\rec_{\Sigma_{\ttt{x}:{#1}} {#2}(\ttt{x})}}
+- \newcommand{\iter}{\operatorname{iter}}
+- \newcommand{\suc}{\operatorname{succ}}
+- \newcommand{\SigmaType}[2]{\Sigma_{\ov{x}:{#1}} {#2}(\ov{x})}
+- \newcommand{\SigmaTypeV}[3]{\Sigma_{\ov{{#1}}:{#2}} {#3}(\ov{{#1}})}
+- \newcommand{\Srec}[2]{\rec_{\SigmaType{#1}{#2}}}
 - \newcommand{\PiType}[2]{\prod_{\ov{x}:{#1}} {#2}(\ov{x})}
 - \newcommand{\PiTypeV}[3]{\prod_{\ov{{#1}}:{#2}} {#3}(\ov{{#1}})}
 - \newcommand{\ProdType}[2]{\prod_{\ov{x}:{#1}} {#2}}
 - \newcommand{\ProdTypeV}[3]{\prod_{\ov{{#1}}:{#2}} {#3}}
 - \newcommand{\IndProd}[2]{\ind_{{#1}\times {#2}}}
+- \newcommand{\IndDProd}[2]{\ind_{\SigmaType{#1}{#2}}}
 - \newcommand{\UniqProd}[2]{\uniq_{{#1}\times {#2}}}
+- \newcommand{\UniqDProd}[2]{\uniq_{\SigmaType{#1}{#2}}}
 - \newcommand{\pr}{\operatorname{pr}}
 - \newcommand{\jdef}{:\equiv}
 ---

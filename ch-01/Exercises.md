@@ -557,3 +557,38 @@ because we cannot *judgementally* conclude that
 $$\pr_1(\iter(\N \times C, (0, c_0), f, n) \equiv n.$$
 
 Second, even if we could, this equation wouldn't need to be respected by $f$.
+
+So, let us fix this by first deriving a propositional version of the equation
+above, i.e. let us find a term of type
+
+$$D(n) \jdef \pr_1(\iter(\N \times C, (0,c_0), f,n) =_{\N} n$$
+under the context^[In the following (and probably thereafter), we will relax
+our convention of denoting object language terms using \texttt{typewriter
+font}, when it seems harmless; in particular, $C$, $c_0$, $c_s$ and $n$ denote
+object variables in the following.]
+$$\underbrace{C : \UV, c_0 : C, c_s : \N \rto C \rto C}_{\Gamma}, n : \N.$$
+We do this by induction. First
+
+\begin{align*}
+\text{(1)} && \Gamma \vdash \iter(\N \times C, (0,c_0), f, 0) \equiv (0,c) & : \N\times C && \\
+\text{(2)} && \Gamma \vdash \pr_1(\iter(\N \times C, (0, c_0), f, 0)) \equiv \pr_1((0,c))
+& : \N && \text{(1), congruence} \\
+\text{(3)} && \Gamma \vdash \pr_1((0,c)) \equiv 0 & : \N && \text{comp. rule}
+\\
+\text{(4)} && \Gamma \vdash \pr_1(\iter(\N \times C, (0, c_0), f, 0)) \equiv
+0 & : \N && \text{(2), (3), $\equiv$-trans.} \\
+\text{(5)} && \Gamma \vdash \refl_0 & : D(n) && \text{$=$-INTRO
++ $\text{Subst}_2$ + (4)}.
+\end{align*}
+
+Second, abbreviating
+$$g(n) \jdef \iter(\N \times C, (0, c_0), f, n),$$
+we have
+
+\begin{align*}
+   \text{(1)} && \Gamma, n : \N \vdash g(\suc(n))
+   \equiv f(g(n)) & : \N \times C && \text{by assumption} \\
+   \text{(2)} && \Gamma, n : \N \vdash \UniqProd{\N}{C}(g(n)) & : (\pr_1(g(n)), \pr_2(g(n))) =_{\N\times C} g(n) && \\
+   \text{(3)} && \Gamma, n : \N, d : D(n) \vdash d & : \pr_1(g(n)) =_{\N} n &&
+   \text{Vble}
+\end{align*}

@@ -577,7 +577,7 @@ We do this by induction. First
 \\
 \text{(4)} && \Gamma \vdash \pr_1(\iter(\N \times C, (0, c_0), f, 0)) \equiv
 0 & : \N && \text{(2), (3), $\equiv$-trans.} \\
-\text{(5)} && \Gamma \vdash \refl_0 & : D(n) && \text{$=$-INTRO
+\text{(5)} && \Gamma \vdash \refl_0 & : D(0) && \text{$=$-INTRO
 + $\text{Subst}_2$ + (4)}.
 \end{align*}
 
@@ -587,8 +587,42 @@ we have
 
 \begin{align*}
    \text{(1)} && \Gamma, n : \N \vdash g(\suc(n))
-   \equiv f(g(n)) & : \N \times C && \text{by assumption} \\
-   \text{(2)} && \Gamma, n : \N \vdash \UniqProd{\N}{C}(g(n)) & : (\pr_1(g(n)), \pr_2(g(n))) =_{\N\times C} g(n) && \\
-   \text{(3)} && \Gamma, n : \N, d : D(n) \vdash d & : \pr_1(g(n)) =_{\N} n &&
-   \text{Vble}
+   \equiv f(g(n)) : \N \times C && \text{by assumption} \\
+   \text{(2)} && \Gamma, n : \N \vdash \UniqProd{\N}{C}(g(n)) : (\pr_1(g(n)), \pr_2(g(n))) =_{\N\times C} g(n) && \\
+   \text{(3)} && \Gamma, n : \N, d : D(n) \vdash d : \pr_1(g(n)) =_{\N} n &&
+   \text{Vble} \\
+   \text{(4)} && \Gamma, n : \N, d : D(n) \vdash \mathfrak{m}(d)
+   : (n,\pr_2(g(n))) =_{\N\times C} (\pr_1(g(n)), \pr_2(g(n))) && \text{by
+   magic} \\
+   \text{(5)} && \Gamma, n : \N, d : D(n) \vdash \mathfrak{m}(d)\ct
+   \UniqProd{\N}{C}(g(n)) : (n, \pr_2(g(n))) =_{\N \times C} g(n) &&
+   \text{(2),(4)} \\
+   \text{(6)} && \Gamma, n : \N, d : D(n) \vdash \ap_{f}(\mathfrak{m}\ct
+   \UniqProd{\N}{C}(g(n))) : f((n,\pr_2(g(n)))) =_{\N\times C} f(g(n)) &&
+   \text{(5)}. \\
+   \intertext{Putting
+   $$h(n,d) \jdef (\mathfrak{m}(d)\ct \UniqProd{\N}{C}(g(n)))^{-1},$$
+   we therefore have}
+   \text{(6)} && \Gamma, n : \N, d : D(n) \vdash h(n,d) : g(n) =_{\N\times C}
+   (n,\pr_2(g(n))) && \text{by (5).} 
+   \end{align*}
+   From this we can derive two things. First, we get
+   \begin{align*}
+   \text{(7)} && \Gamma, n : \N \vdash g(\suc(n)) \equiv f(g(n)) && 
+   \text{by def.} \\
+   \text{(8)} && \Gamma, n : \N, d : D(n) \vdash \ap_f(h(n,d)) : f(g(n)) =_{\N
+   \times C} f((n, \pr_2(g(n)))) && \text{(6)} \\
+   \text{(9)} && \Gamma, n : \N, d : D(n) \vdash \ap_f(h(n,d)) : g(\suc(n)) =_{\N
+   \times C} f((n, \pr_2(g(n)))) && \text{(7),(8)} \\
+   \text{(10)} && \Gamma, n : \N \vdash f((n, \pr_2(g(n)))) \equiv (\suc(n),c_s(n,\pr_2(g(n)))) : \N \times C && \text{def. + $\beta$-red.} \\
+   \text{(11)} && \Gamma, n : \N, d : D(n) \vdash \ap_f(h(n,d)) : g(\suc(n)) =_{\N
+   \times C} (\suc(n),c_s(n, \pr_2(g(n)))) && \text{(9),(10)} \\
+   \text{(12)} && \Gamma, n : \N, d : D(n) \vdash \ap_{\pr_1}(\ap_f(h(n,d)))
+   : D(\suc(n)) && \text{(11)}. \\
+   \intertext{Thus we can use induction to populate $D(n)$ for all $n$}
+   \text{(13)} && \Gamma, n : \N \vdash \underbrace{\ind_{\N}(\refl_0,
+   \labst{n}{\labst{d}{\ap_{\pr_1}(\ap_f(h(n,d)))}}, n)}_{\equiv: d(n)} : D(n), && \\
+   \intertext{and hence eliminate the variable $d : D(n)$ from our context}
+   \text{(14)} && \Gamma, n : \N \vdash \ap_f(h(n, d(n))) : g(\suc(n))
+   =_{\N\times C} (\suc(n), c_s(\pr_2(g(n)))) && \text{(11),(13)}
 \end{align*}

@@ -555,7 +555,6 @@ First, we cannot derive the equation
 $$\iter(\N \times C, (0, c_0), f, n) \equiv (n, \pr_2(\iter(\N \times C, (0, c_0), f, n)))$$
 because we cannot *judgementally* conclude that
 $$\pr_1(\iter(\N \times C, (0, c_0), f, n) \equiv n.$$
-
 Second, even if we could, this equation wouldn't need to be respected by $f$.
 
 So, let us fix this by first deriving a propositional version of the equation
@@ -592,8 +591,9 @@ we have
    \text{(3)} && \Gamma, n : \N, d : D(n) \vdash d : \pr_1(g(n)) =_{\N} n &&
    \text{Vble} \\
    \text{(4)} && \Gamma, n : \N, d : D(n) \vdash \mathfrak{m}(d)
-   : (n,\pr_2(g(n))) =_{\N\times C} (\pr_1(g(n)), \pr_2(g(n))) && \text{by
-   magic} \\
+   : (n,\pr_2(g(n))) =_{\N\times C} (\pr_1(g(n)), \pr_2(g(n))) && \text{(3),} \\
+   \intertext{where
+   $$\mathfrak{m}(d) \jdef \ap_{\labst{x}{(x, \pr_2(g(n)))}}(d),$$}
    \text{(5)} && \Gamma, n : \N, d : D(n) \vdash \mathfrak{m}(d)\ct
    \UniqProd{\N}{C}(g(n)) : (n, \pr_2(g(n))) =_{\N \times C} g(n) &&
    \text{(2),(4)} \\
@@ -602,7 +602,8 @@ we have
    \text{(5)}. \\
    \intertext{Putting
    $$h(n,d) \jdef (\mathfrak{m}(d)\ct \UniqProd{\N}{C}(g(n)))^{-1},$$
-   we therefore have}
+   where $p^{-1} : y = x$ denotes the \textit{inverse} of a ``path'' $p
+   : x = y$ (see HoTT book, Lemma 2.1.1), we therefore have}
    \text{(6)} && \Gamma, n : \N, d : D(n) \vdash h(n,d) : g(n) =_{\N\times C}
    (n,\pr_2(g(n))) && \text{by (5).} 
    \end{align*}
@@ -624,5 +625,20 @@ we have
    \labst{n}{\labst{d}{\ap_{\pr_1}(\ap_f(h(n,d)))}}, n)}_{\equiv: d(n)} : D(n), && \\
    \intertext{and hence eliminate the variable $d : D(n)$ from our context}
    \text{(14)} && \Gamma, n : \N \vdash \ap_f(h(n, d(n))) : g(\suc(n))
-   =_{\N\times C} (\suc(n), c_s(\pr_2(g(n)))) && \text{(11),(13)}
+   =_{\N\times C} (\suc(n), c_s(n, \pr_2(g(n)))) && \text{(11),(13).} \\
+   \intertext{Abbreviating $r(n) \jdef r(C,c_0,c_s,n) \equiv \pr_2(g(n))$, we
+   can now finish the derivation of the propositional recursion principle:}
+   \text{(15)} && \Gamma, n : \N \vdash \ap_{\pr_2}(\ap_f(h(n,d(n)))) &&
+   \text{(14)} \\
+   && : \pr_2(g(\suc(n))) =_C \pr_2((\suc(n), c_s(n, \pr_2(g(n)))) && \\
+   \text{(16)} && \Gamma, n : \N \vdash r(n) \equiv \pr_2(g(n))
+   : C && \text{by def.} \\
+   \text{(17)} && \Gamma, n : \N \vdash r(\suc(n)) \equiv \pr_2(g(\suc(n)))
+   : C && \text{(16) using subst.} \\
+   \text{(18)} && \Gamma, n : \N \vdash \pr_2(\suc(n), c_s(n, \pr_2(g(n))))
+   \equiv c_s(n, \pr_2(g(n))) : C && \text{congruence for $\pr$} \\
+   \text{(19)} && \Gamma, n : \N \vdash \pr_2(\suc(n), c_s(n, \pr_2(g(n))))
+   \equiv c_s(n, r(n)) : C && \text{(15),(16) using subst.} \\
+   \text{(20)} && \Gamma, n : \N \vdash \ap_{\pr_2}(\ap_f(h(n, d(n))))
+   : r(\suc(n)) =_C c_2(n, r(n)) && \text{(14), (17), (19).}
 \end{align*}

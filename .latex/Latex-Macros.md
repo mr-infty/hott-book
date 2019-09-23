@@ -22,13 +22,15 @@ header-includes:
 - \newcommand{\rto}{\rightarrow}
 - \newcommand{\labst}[2]{\lambda{#1}.\ {#2}}
 - \newcommand{\labstt}[3]{\lambda ({#1}:{#2}).\ {#3}}
-- \newcommand{\rec}{\operatorname{rec}}
-- \newcommand{\ind}{\operatorname{ind}}
-- \newcommand{\uniq}{\operatorname{uniq}}
-- \newcommand{\tp}{\operatorname{transport}}
-- \newcommand{\refl}{\operatorname{refl}}
-- \newcommand{\iter}{\operatorname{iter}}
-- \newcommand{\suc}{\operatorname{succ}}
+- \DeclareMathOperator{\rec}{\mathsf{rec}}
+- \DeclareMathOperator{\ind}{\mathsf{ind}}
+- \DeclareMathOperator{\uniq}{\mathsf{uniq}}
+- \DeclareMathOperator{\tp}{\mathsf{transport}}
+- \DeclareMathOperator{\refl}{\mathsf{refl}}
+- \DeclareMathOperator{\iter}{\mathsf{iter}}
+- \DeclareMathOperator{\suc}{\mathsf{succ}}
+- \DeclareMathOperator{\inl}{\mathsf{inl}}
+- \DeclareMathOperator{\inr}{\mathsf{inr}}
 - \newcommand{\SigmaType}[2]{\Sigma_{\ov{x}:{#1}} {#2}(\ov{x})}
 - \newcommand{\SigmaTypeV}[3]{\Sigma_{\ov{{#1}}:{#2}} {#3}(\ov{{#1}})}
 - \newcommand{\Srec}[2]{\rec_{\SigmaType{#1}{#2}}}
@@ -40,6 +42,11 @@ header-includes:
 - \newcommand{\IndDProd}[2]{\ind_{\SigmaType{#1}{#2}}}
 - \newcommand{\UniqProd}[2]{\uniq_{{#1}\times {#2}}}
 - \newcommand{\UniqDProd}[2]{\uniq_{\SigmaType{#1}{#2}}}
+- \newcommand{\emptyt}{\mathbf{0}}
+- \newcommand{\unit}{\mathbf{1}}
+- \newcommand{\bool}{\mathbf{2}}
+- \newcommand{\btrue}{{1_{\bool}}}
+- \newcommand{\bfalse}{{0_{\bool}}}
 - \newcommand{\pr}{\operatorname{pr}}
 - \newcommand{\jdef}{:\equiv}
 - \newcommand{\Id}[3]{{#2}=_{#1} {#3}}

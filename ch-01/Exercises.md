@@ -642,3 +642,32 @@ we have
    \text{(20)} && \Gamma, n : \N \vdash \ap_{\pr_2}(\ap_f(h(n, d(n))))
    : r(\suc(n)) =_C c_2(n, r(n)) && \text{(14), (17), (19).}
 \end{align*}
+
+## Exercise 1.5
+> Show that if we define $A + B \jdef \Sigma_{x:\bool} \rec_\bool(\UV, A, B,
+> x)$, then we can give a definition of $\ind_{A+B}$ for which the definitional
+> equalities stated in \textsection 1.7 hold.
+
+* * *
+In other words, we are to show here that binary coproducts can be derived from
+$\Sigma$-types and the boolean type $\bool$, as hinted at in the beginning of
+\textsection 1.8.
+
+First, we define^[Again just to be clear, $\inl$ and $\inr$ also take the types $A : \UV$
+and $B : \UV$ as "implicit" arguments, which are suppressed in the notation however.]
+\begin{align*}
+\inl & : A \rto A + B \\
+\inr & : B \rto A + B
+\end{align*}
+as
+\begin{align*}
+\inl & \jdef \labst{a}{(\bfalse, a)} \\
+\inr & \jdef \labst{b}{(\btrue, b)};
+\end{align*}
+the well-typedness of these expressions follows from the definitional
+equalities for $\rec_\bool$.
+
+Given these constructors for the sum type, the induction "principle"^[the
+*inductor*?] $\ind_{A+B}$ should be of type
+$$\ind_{A+B}: \prod_{C: (A+B) \rto \UV} \left(\prod_{a : A} C(\inl(a)) \right)
+\rto \left(\prod_{b : B} C(\inr(b)) \right) \rto \prod_{x : A+B} C(x).$$

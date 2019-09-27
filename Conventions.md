@@ -1,6 +1,7 @@
 # Typographical Conventions
 
-* Object-language terms are written in \texttt{fixed-width} or special fonts
+* Object-language terms are written in \texttt{fixed-width}^[However, strings in
+  fixed-width font beginning with a question mark like $\ttt{?f}$ do *not* denote object language terms but "holes"; see below.] or special fonts
   (e.g. $\N$, $\mathcal{U}_0$), whereas meta-language terms are written in `normal',
   variable-width font. For example, in the sentence
 
@@ -14,7 +15,12 @@
 
   $$\Gamma \vdash J$$
 
-  is empty, we may drop the turnstile and simply denote it by $J$.
+  is empty, we may drop the turnstile and simply denote it by $J$. Or, we might
+  write it as
+  $$\vdash J$$
+  or even use the book's convention and denote the empty context explicitly
+  using a dot
+  $$\emptyctx \vdash J.$$
 
 * When presenting deduction rules, we will usually drop the parentheses in
   contexts, e.g. we write
@@ -44,24 +50,31 @@
    \text{(-1), $\Pi$-INTRO} \\
    \text{(-1)} && \Gamma, x : A \vdash \Box : B. &&
    \end{align*}
-   Named holes are indicated by a question mark followed by a meta-variable name, all written in fraktur, as in
+   Named holes are indicated by a question mark followed by a meta-variable name, all written in fixed-width font, as in
    \begin{align*}
-   \text{(0)} && \Gamma \vdash \labstt{x}{A}{\mathfrak{?f}} : \prod_{x : A} B &&
+   \text{(0)} && \Gamma \vdash \labstt{x}{A}{\ttt{?f}} : \prod_{x : A} B &&
    \text{(-1), $\Pi$-INTRO} \\
-   \text{(-1)} && \Gamma, x : A \vdash \mathfrak{?f} : B. &&
+   \text{(-1)} && \Gamma, x : A \vdash \ttt{?f} : B. &&
    \end{align*}
 
+* If $f$ is a function symbol that's usually written in infix notation, we will
+  write $(f)$ (following the Idris convention) when we want to indicate that it is written in postfix.
+  
+  For example, we might write
+  $$\labstt{\N}{n}{\labstt{\N}{m}{n+m}}$$
+  also as
+  $$\labstt{\N}{n}{\labstt{\N}{m}{(+)(n,m).}}$$
 
-# On "holes"
+# On holes
 
-The concept of a "hole" is extremely important for the practical usefulness
-of dependently typed programming languages; for that same reason, we must
-talk about it here, since there is no difference between making proofs in
-type theory and programming in dependently typed programming languages.
+The concept of a "hole" is crucial for the practicality of programming in
+depenently typed programming languages; for that same reason, we must
+talk about it here, since there is no difference between that activity and
+doing proofs in type theory.
 
 ## The problem 
 
-If life would be easy, whenever we'd want to prove something in type theory,
+If life would be easy^[Newsflash, it's not.], whenever we'd want to prove something in type theory,
 i.e. find a term $t$ of a given type $T$, we would just come up with
 a (linearized) derivation tree ending in the desired judgement
 $$\Gamma \vdash t : T.$$
@@ -119,24 +132,113 @@ meta-variables/holes, they aren't judgements, strictly speaking.]
 \text{(-1)} && \Gamma, x : A \vdash \Box : B. &&
 \end{align*}
 is already fixed by specifying that the rule scheme $\Pi$-INTRO is used to
-derive (0) from (-1): the contents of the (unique) box in judgement (-1)---once that boxed is filled---are to be placed inside the (unique) box in judgement (0).
+derive (0) from (-1): the contents of the (unique) box in judgement (-1) are to be placed inside the (unique) box in judgement (0), once the former box is filled.
 
 However, sometimes (especially when applying a rule scheme containing several
 meta-variables) it's helpful to make this relation more explicit by naming the
 holes, i.e. by inserting an actual meta-variable instead of the box symbol.
 Following a popular convention from dependently typed programming, these
-meta-variables will be written in *fraktur*^[Unforunately, I already chose to use \ttt{typewriter font} for literal object language terms, and fonts like \ttt{mathcal} are very limited.] with a question mark infront, to clearly
+meta-variables will be written in fixed-width font with a question mark infront, to clearly
 mark them as such.
 
 The example above could therefore have also been written as
 
 \begin{align*}
-\text{(0)} && \Gamma \vdash \labstt{x}{A}{\mathfrak{?f}} : \prod_{x : A} B &&
+\text{(0)} && \Gamma \vdash \labstt{x}{A}{\ttt{?f}} : \prod_{x : A} B &&
 \text{(-1), $\Pi$-INTRO} \\
-\text{(-1)} && \Gamma, x : A \vdash \mathfrak{?f} : B. &&
+\text{(-1)} && \Gamma, x : A \vdash \ttt{?f} : B. &&
 \end{align*}
+
+## Filling holes
+
+Once a hole has been created in a proof, you must eventually *fill* it in order
+to obtain a complete derivation. To fill a hole means to have
+a complete^[complete up to *filled* holes] derivation ending^[i.e. starting in
+it, if the derivation is written backwards] in it.
+
+For instance, if in the above example we had $A \equiv B$, we could fill the
+hole as follows:
+
+\begin{align*}
+\text{(0)} && \Gamma \vdash \labstt{x}{A}{\ttt{?f}} : \prod_{x : A} A &&
+\text{(-1), $\Pi$-INTRO} \\
+\text{(-1)} && \Gamma, x : A \vdash \ttt{?f} : A. && \text{(-2),Vble} \\
+\text{(-2)} && \Gamma, x : A\ \ctx && \text{by assumption.}
+\end{align*}
+Again, that the term $x$ is to be inserted into the hole $\ttt{?f}$ is implicit
+in stating that rule $\text{Vble}$ is used to derive (-1) from (-2).
+
+## Removing holes
+
+Once all holes in a derivation with holes are "filled", we can derive
+a "normal" derivation (without holes), by substituting the filling terms into
+their corresponding holes, successively from bottom to top.
+
+For example, removing the holes in the above three-step derivation results in
+
+\begin{align*}
+\text{(0)} && \Gamma \vdash \labstt{x}{A}{x} : \prod_{x : A} A &&
+\text{(-1), $\Pi$-INTRO} \\
+\text{(-1)} && \Gamma, x : A \vdash x : A. && \text{(-2),Vble} \\
+\text{(-2)} && \Gamma, x : A\ \ctx && \text{by assumption.}
+\end{align*}
+
+Since this is a completely mechanical operation that is
+obviously\texttrademark{} well-defined and correct,
+there is no need to actually carry it out. So, we won't.
+
+## Updating
+
+Even though writing derivations backwards and using holes help in reconciling
+the *interactive* nature of dependently typed programming with the *linear* and 
+*immutable* nature of written text, some tension remains.
+
+It is therefore sometimes convenient to "update" a judgement, i.e. to first
+write down a preliminary version (e.g. in order to have something written down
+that can then be easily referred to verbally) and then afterwards follow
+it by a more complete, or even final version.
+
+We adopt the convention that *a judgement always supersedes any previous ones
+with the same number*. Here we mean by "supersede" that a newer version
+replaces an older one *in situ*, i.e. even if more judgements (with lower
+numbers) are written down in between, judgements are to be read in order
+according to their numbering.
+
+For instance, in the example below we want to derive the addition on natural
+numbers, so we might want to start by writing down
+\begin{align*}
+\text{(0)} && \vdash (\ttt{?+}) : \N \rto \N \rto \N && 
+\end{align*}
+in order to fix the type of the sought-after term in the readers mind. Then, we
+might want to bring to the readers attention the convention regarding
+associativity of the arrow notation and rewrite the judgement as
+\begin{align*}
+\text{(0)} && \vdash (\ttt{?+}) : \N \rto (\N \rto \N), && 
+\end{align*}
+so that it immediately suggests the application of the induction principle,
+which then leads us to rewrite it a second (and final) time as
+\begin{align*}
+\text{(0)} && \vdash (\ttt{?+}) : \N \rto (\N \rto \N) && \text{$\N$-ELIM on
+(-1),(-2)} \\
+\text{(-1)} && \vdash \ttt{?add\_zero} : \N \rto \N && \\
+\text{(-2)} && n : \N, f : \N \rto \N \vdash \ttt{?add\_ind}(n,f) : \N \rto \N. &&
+\end{align*}
+Once again, stating that (0) is derived from (-1) and (-2) contains some
+implicit information, in this case the assumed judgemental equality
+$$(\ttt{?+}) \equiv \ind_\N(\labst{n}{\N \rto \N}, \ttt{?add\_zero}, \ttt{?add\_ind}).$$ 
+If we want to make this explicit (which in this case we probably would), we
+could have done so by writing
+\begin{align*}
+\text{(0)} && \vdash \ind_\N(\labst{n}{\N \rto \N}, \ttt{?add\_zero}, \ttt{?add\_ind}) : \N \rto (\N \rto \N) && \text{$\N$-ELIM on (-1),(-2)}
+\end{align*}
+instead (or afterwards).
 
 ## Example of a derivation containing holes
 
-To make things clearer, let us look at a complete example derivation that uses holes.
+To fix ideas, let us look at a more complicated derivation, containing several
+holes.
 
+Let us define addition of natural numbers.
+\begin{align*}
+\text{(0)} && \vdash (\ttt{?+}) : \N \rto \N \rto \N && 
+\end{align*}

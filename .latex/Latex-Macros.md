@@ -31,6 +31,8 @@ header-includes:
 - \DeclareMathOperator{\suc}{\mathsf{succ}}
 - \DeclareMathOperator{\inl}{\mathsf{inl}}
 - \DeclareMathOperator{\inr}{\mathsf{inr}}
+- \DeclareMathOperator{\ctx}{\mathsf{ctx}}
+- \DeclareMathOperator{\emptyctx}{\cdot}
 - \newcommand{\SigmaType}[2]{\Sigma_{\ov{x}:{#1}} {#2}(\ov{x})}
 - \newcommand{\SigmaTypeV}[3]{\Sigma_{\ov{{#1}}:{#2}} {#3}(\ov{{#1}})}
 - \newcommand{\Srec}[2]{\rec_{\SigmaType{#1}{#2}}}
@@ -47,9 +49,9 @@ header-includes:
 - \newcommand{\bool}{\mathbf{2}}
 - \newcommand{\btrue}{{1_{\bool}}}
 - \newcommand{\bfalse}{{0_{\bool}}}
-- \newcommand{\pr}{\operatorname{pr}}
+- \DeclareMathOperator{\pr}{\mathsf{pr}}
 - \newcommand{\jdef}{:\equiv}
 - \newcommand{\Id}[3]{{#2}=_{#1} {#3}}
-- \newcommand{\ap}{\operatorname{ap}}
+- \DeclareMathOperator{\ap}{\mathsf{ap}}
 - \newcommand{\ct}{\mathchoice{\mathbin{\raisebox{0.5ex}{$\displaystyle\centerdot$}}}{\mathbin{\raisebox{0.5ex}{$\centerdot$}}}{\mathbin{\raisebox{0.25ex}{$\scriptstyle\,\centerdot\,$}}}{\mathbin{\raisebox{0.1ex}{$\scriptscriptstyle\,\centerdot\,$}}}}
 ---

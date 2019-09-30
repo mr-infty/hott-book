@@ -194,9 +194,9 @@ the *interactive* nature of dependently typed programming with the *linear* and
 *immutable* nature of written text, some tension remains.
 
 It is therefore sometimes convenient to "update" a judgement, i.e. to first
-write down a preliminary version (e.g. in order to have something written down
-that can then be easily referred to verbally) and then afterwards follow
-it by a more complete, or even final version.
+write down a preliminary version (e.g. in order to have something 
+that can be referred to verbally) and then afterwards follow
+it by a more complete, or final version.
 
 We adopt the convention that *a judgement always supersedes any previous ones
 with the same number*. Here we mean by "supersede" that a newer version
@@ -220,25 +220,66 @@ which then leads us to rewrite it a second (and final) time as
 \begin{align*}
 \text{(0)} && \vdash (\ttt{?+}) : \N \rto (\N \rto \N) && \text{$\N$-ELIM on
 (-1),(-2)} \\
-\text{(-1)} && \vdash \ttt{?add\_zero} : \N \rto \N && \\
-\text{(-2)} && n : \N, f : \N \rto \N \vdash \ttt{?add\_ind}(n,f) : \N \rto \N. &&
+\text{(-1)} && \vdash \ttt{?add}_0 : \N \rto \N && \\
+\text{(-2)} && n : \N, f : \N \rto \N \vdash \ttt{?add}_s(n,f) : \N \rto \N. &&
 \end{align*}
 Once again, stating that (0) is derived from (-1) and (-2) contains some
 implicit information, in this case the assumed judgemental equality
-$$(\ttt{?+}) \equiv \ind_\N(\labst{n}{\N \rto \N}, \ttt{?add\_zero}, \ttt{?add\_ind}).$$ 
+$$(\ttt{?+}) \equiv \ind_\N(\labst{n}{\N \rto \N}, \ttt{?add}_0, \ttt{?add}_s).$$ 
 If we want to make this explicit (which in this case we probably would), we
 could have done so by writing
 \begin{align*}
-\text{(0)} && \vdash \ind_\N(\labst{n}{\N \rto \N}, \ttt{?add\_zero}, \ttt{?add\_ind}) : \N \rto (\N \rto \N) && \text{$\N$-ELIM on (-1),(-2)}
+\text{(0)} && \vdash \ind_\N(\labst{n}{\N \rto \N}, \ttt{?add}_0, \ttt{?add}_s) : \N \rto (\N \rto \N) && \text{$\N$-ELIM on (-1),(-2)}
 \end{align*}
-instead (or afterwards).
+instead (or even afterwards).
 
 ## Example of a derivation containing holes
 
 To fix ideas, let us look at a more complicated derivation, containing several
 holes.
 
-Let us define addition of natural numbers.
+First, let us define addition of natural numbers
 \begin{align*}
-\text{(0)} && \vdash (\ttt{?+}) : \N \rto \N \rto \N && 
+\text{(0)} && \vdash (\ttt{?+}) : \N \rto \N \rto \N. && \\
+\intertext{Recalling that $\rto$ associates to the right}
+\text{(0)} && \vdash (\ttt{?+}) : \N \rto (\N \rto \N), && \\
+\intertext{it's natural to try to use induction to fulfill this
+goal:}
+\text{(0)} && \vdash \ind_\N(\labst{n}{\N \rto \N}, \ttt{?add}_0, \ttt{?add}_s) : \N \rto (\N \rto \N) && \text{$\N$-ELIM on (-1),(-2)} \\
+\text{(-1)} && \vdash \ttt{?add}_0 : \N \rto \N && \\
+\text{(-2)} && n : \N, f : \N \rto \N \vdash \ttt{?add}_s(n,f) : \N \rto \N. && \\
+\intertext{Addition should satisfy $0 + m \equiv m$ and $(\suc(n))+ m \equiv \suc (n+m)$, so we plug those holes as follows.}
+\text{(-1)} && \vdash \labstt{\N}{m}{m} : \N \rto \N && \text{obviously} \\
+\text{(-2)} && n : \N, f : \N \rto \N \vdash \labstt{\N}{m}{\suc(f(m))} : \N \rto \N && \text{obviously}
+\end{align*}
+Thus, addition is given by the following term of inarguable, majestic beauty:
+$$(+) \equiv \ind_\N(\labst{n}{\N \rto \N}, \labst{m}{m}, \labst{n}{\labst{f}{\labst{m}{\suc(f(m))}}}.$$
+
+Second, let's prove that addition is associative.
+So we want to inhabit
+\begin{align*}
+\text{(0)} && n,m,k : \N \vdash \Box : (n+m) + k =_\N n + (m + k). && \\
+\intertext{Of course we are going to use induction for this, so we somehow need
+to get a function $\N \rto$ in there. Since we want to use induction on the
+variable $n$, we produce this function by lambda abstracting on that variable:}
+\text{(0)} && n,m,k : \N \vdash \ttt{?f}(n) : (n+m) + k =_\N n + (m + k) && \text{$\Pi$-ELIM on (-1)} \\
+\text{(-1)} && m,k : \N \vdash \ttt{?f} : \prod_{n : \N} (n+m) + k =_\N n + (m + k). && \\
+\intertext{Now we plug this hole using induction:}
+\text{(-1)} && m,k : \N \vdash \ttt{?f} : \prod_{n : \N} (n+m) + k =_\N n + (m + k) && \text{$\N$-ELIM on (-2), (-3)} \\
+\text{(-2)} && m,k : \N \vdash \ttt{?f}_0 : (0+m) + k =_\N 0 + (m + k) && \\
+\text{(-3)} && m,k : \N, n : \N, p : (n+m) + k =_\N n + (m + k) && \\
+&& \vdash \ttt{?f}_s(n,p) : (\suc(n)+m) + k =_\N \suc(n) + (m + k). && \\
+\intertext{Now by construction of $(+)$, we have $$0 + m \equiv m$$
+\textit{judgementally} (by $\N\text{-COMP}_1$). Therefore, we can easily plug $\ttt{?f}_0$:}
+\text{(-2)} && m,k : \N \vdash \refl_{m+k} : (0+m) + k =_\N 0 + (m + k). && \\
+\intertext{By $\N\text{-COMP}_2$, we have
+$$\suc(n)+ \_ \equiv \ttt{add}_s(n,n+\_) \equiv \labst{m}{\suc(n+m)}.$$
+Thus $\suc(n)+m \equiv \suc(n+m)$ by $\beta$-reduction. We can therefore
+rewrite (-3) equivalently as}
+\text{(-3)} && m,k : \N, n : \N, p : (n+m) + k =_\N n + (m + k) && \\
+&& \vdash \ttt{?f}_s(n,p) : \suc((n+m) + k) =_\N \suc(n + (m + k)). && \\
+\intertext{Now it's obvious how to plug $?\ttt{f}_s$, we simply use
+(non-dependent) ``action on paths'':}
+\text{(-3)} && m,k : \N, n : \N, p : (n+m) + k =_\N n + (m + k) && \\
+&& \vdash \ap_{\labst{x}{\suc(x)}}(p) : \suc((n+m) + k) =_\N \suc(n + (m + k)). && \\
 \end{align*}

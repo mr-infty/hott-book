@@ -671,3 +671,82 @@ Given these constructors for the sum type, the induction "principle"^[the
 *inductor*?] $\ind_{A+B}$ should be of type
 $$\ind_{A+B}: \prod_{C: (A+B) \rto \UV} \left(\prod_{a : A} C(\inl(a)) \right)
 \rto \left(\prod_{b : B} C(\inr(b)) \right) \rto \prod_{x : A+B} C(x).$$
+To find such an expression, it is natural to proceed as follows. First, we
+abbreviate
+$$\Gamma \jdef A, B : \UV, C: A+B \rto \UV, g_0 : \prod_{a : A} C(\inl(a)), g_1
+: \prod_{b : B} C(\inr(b)).$$
+Thus, the construction of $\ind_{A+B}$ amounts to plugging the hole
+\begin{align*}
+\text{(0)} && \Gamma, x : A+B \vdash \Box : C(x). && \\
+\intertext{Since $x : A+B \equiv \Sigma_{y : \bool}\rec_\bool(\UV,A,B,y)$ is an
+element of a $\Sigma$-type, we can apply induction}
+\text{(0)} && \Gamma, x : A+B \vdash \ind_{\Sigma_{y : \bool}
+\rec_\bool(\UV,A,B,y)}(C, \ov{?g}, x) : C(x) && \text{$\Sigma$-ELIM on (-1)} \\
+\intertext{to reduce to the construction of a dependent function}
+\text{(-1)} && \Gamma \vdash \ov{?g} : \prod_{y : \bool} \prod_{z
+: \rec_\bool(\UV, A, B, y)} C((y,z)),  && \\
+\intertext{which we can further reduce by case splitting}
+\text{(-1)} && \Gamma \vdash \ind_\bool(C,\ttt{?g}_0, \ttt{?g}_1) : \prod_{y : \bool} \prod_{z
+: \rec_\bool(\UV, A, B, y)} C((y,z)) && \text{$\bool$-ELIM on (-2),(-3)} \\
+\text{(-2)} && \Gamma \vdash \ttt{?g}_0 : \prod_{z
+: \rec_\bool(\UV, A, B, y)} C((\bfalse,z)) && \\
+\text{(-3)} && \Gamma \vdash \ttt{?g}_1 : \prod_{z
+: \rec_\bool(\UV, A, B, y)} C((\btrue,z)). && \\
+\intertext{Remembering the computational rules $$\rec_\bool(C,c_0,c_1,\bfalse)
+\equiv c_0 \quad\text{and}\quad \rec_\bool(C,c_0,c_1,\btrue) \equiv c_1,$$ we can rewrite this as}
+\text{(-2)} && \Gamma \vdash \ttt{?g}_0 : \prod_{z
+: A} C((\bfalse,z)) && \\
+\text{(-3)} && \Gamma \vdash \ttt{?g}_1 : \prod_{z
+: B} C((\btrue,z)). && \\
+\intertext{Now, remembering the definition of $\Gamma$ and of $\inl$ and
+$\inr$, we see that}
+\text{(-2)} && \Gamma \vdash g_0 : \prod_{z
+: A} C((\bfalse,z)) && \\
+\text{(-3)} && \Gamma \vdash g_1 : \prod_{z
+: B} C((\btrue,z)). && \\
+\end{align*}
+Just to be explicit, the defining term for $\ind_{A+B}$ resulting from the
+above derivation is^[Where again, $\ind_{A+B}$ is syntactic sugar for
+something like $+\text{-}\ind(A,B)$, where $+\text{-}\ind$ would be defined by
+the expression below, only lambda abstracted over $A$ and $B$ too. Moreover, you might also want to abstract over universes; however, we actually can't do that with the type rules given in appendix
+2.]
+$$\ind_{A+B} \equiv \labst{C}{\labst{g_0}{\labst{g_1}{\labst{x}{\ind_{\Sigma_{y : \bool}
+\rec_\bool(\UV,A,B,y)}(C, \ind_\bool(C, g_0, g_1), x)}}}}.$$
+Finally, let's verify the judgemental equalities
+\begin{align*}
+\ind_{A+B}(C, g_0, g_1, \inl(a)) & \equiv g_0(a) \\
+\ind_{A+B}(C, g_0, g_1, \inr(b)) & \equiv g_0(b)
+\end{align*}
+given in \textsection 1.7^[Actually, those equalities *aren't* given there, only their
+analogues for the recursor. But, I guess that's what's meant.
+Note also that, technically, the exercise doesn't even ask for verifying those
+equalities; it only asks for giving a definition of $\ind_{A+B}$ for which
+these equalities can be derived.].
+
+This is a pure computation^[Proving things in type theory falls into to
+distinct categories: judgemental "computations" and actual proof steps. In order to
+make type theory viable as a basis for formal proofs, it's crucial to separate
+those two as much as possible (See "Proofs in theories" by Gilles Dowek, or his
+two-part talk "Deduction Modulo Rewriting" at the ISR 2019.)] because the
+necessary "computational" rules for the types involved in the definition of
+$\ind_{A+B}$ are given as *judgemental* equalities.
+Thus, instead of writing down a linearized
+derivational tree as usual, we will simply write down a bunch of terms, with an
+indication of which rule is used for rewriting in between two terms:
+
+\begin{align*}
+& \ind_{A+B}(C,g_0,g_1,\inl(a)) \\
+\intertext{\footnotesize (definition of $\ind_{A+B}$)}
+& \equiv (\labst{C}{\labst{g_0}{\labst{g_1}{\labst{x}{\ind_{\Sigma_{y : \bool}
+\rec_\bool(\UV,A,B,y)}(C, \ind_\bool(C, g_0, g_1), x)}}}})(C,g_0,g_1,\inl(a)) \\
+\intertext{\footnotesize ($\beta$-reduction)}
+& \equiv \ind_{\Sigma_{y : \bool} \rec_\bool(\UV,A,B,y)}(C, \ind_\bool(C, g_0, g_1), \inl(a)) \\
+\intertext{\footnotesize (definition of $\inl$)}
+& \equiv \ind_{\Sigma_{y : \bool} \rec_\bool(\UV,A,B,y)}(C, \ind_\bool(C, g_0, g_1), (\bfalse, a)) \\
+\intertext{\footnotesize (comp. rule for $\Sigma$)}
+& \equiv \ind_\bool(C, g_0, g_1)(\bfalse,a) \\
+\intertext{\footnotesize (comp. rule for $\bool$)}
+& \equiv g_0(a).
+\end{align*}
+
+The second equality can be verified similarly.

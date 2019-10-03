@@ -750,3 +750,49 @@ indication of which rule is used for rewriting in between two terms:
 \end{align*}
 
 The second equality can be verified similarly.
+
+## Exercise 1.6
+> Show that if we define $A \times B \jdef \prod_{x:\bool}
+> \rec_\bool(\UV,A,B,x)$, then we can give a definition of $\ind_{A\times B}$
+> for which the definitional equalities stated in \textsection 1.5 hold
+> propositionally (i.e. using equality types). *(This requires the function
+> extensionsality axiom, which is introduced in \textsection 2.9.)*
+
+* * *
+Given the previous exercise, one might expect that we should get the desired
+equalities *judgementally* here too. So, let's see where things go wrong.
+
+The definitional equality we need to "verify" is
+\begin{align*} A,B : \UV, C: A\times B \rto \UV, g : \prod_{x:A, y : B} C((x,y)), a : A, b : B \\ \vdash \Box : \ind_{A\times B}(C,g,(a,b)) =_{C((a,b))} g(a)(b),\end{align*}
+so we first need to define the constructor $(\--,\--)$ appearing in this
+expression.
+
+We begin with
+\begin{align*}
+\text{(0)} && A,B : \UV \vdash \texttt{?(-,-)} : A \rto B \rto A\times B &&
+\text{2x $\Pi$-INTRO on (-1)} \\
+\text{(-1)} && A,B : \UV, a : A, b : B \vdash \texttt{?p} : A\times B. && \\
+\intertext{Remembering the definition of $A\times B$}
+\text{(-1)} && A,B : \UV, a : A, b : B \vdash \texttt{?p} : \prod_{x
+: \bool}\rec_\bool(\UV,A,B,x), && \\
+\intertext{we proceed using lambda abstraction}
+\text{(-1)} && A,B : \UV, a : A, b : B \vdash \labstt{\bool}{x}{\Box} : \prod_{x
+: \bool}\rec_\bool(\UV,A,B,x) && \text{$\Pi$-ELIM on (-2)} \\
+\text{(-2)} && A,B : \UV, a : A, b : B, x : \bool \vdash \Box : \rec_\bool(\UV,A,B,x), && \\
+\intertext{and then case-splitting (boolean induction)}
+\text{(-2)} && A,B : \UV, a : A, b : B, x : \bool && \text{$\bool$-ELIM on (-3),(-4)} \\
+&& \vdash \ind_\bool(\labst{y}{\rec_\bool(\UV,A,B,y)}, \texttt{?c}_0, \texttt{?c}_1, x) : \rec_\bool(\UV,A,B,x) && \\
+\text{(-3)} && A,B : \UV, a : A, b : B \vdash \texttt{?c}_0 : \rec_\bool(\UV,A,B,\bfalse) && \\
+\text{(-4)} && A,B : \UV, a : A, b : B \vdash \texttt{?c}_1 : \rec_\bool(\UV,A,B,\btrue). && \\
+\intertext{Using $\bool$-COMP we rewrite the last two judgements as}
+\text{(-3)} && A,B : \UV, a : A, b : B \vdash \texttt{?c}_0 : A && \\
+\text{(-4)} && A,B : \UV, a : A, b : B \vdash \texttt{?c}_1 : B, && \\
+\intertext{to see that these holes can be filled by}
+\text{(-3)} && A,B : \UV, a : A, b : B \vdash a : A && \\
+\text{(-4)} && A,B : \UV, a : A, b : B \vdash b : B. && \\
+\end{align*}
+In summary:
+$$(a,b) \jdef \labstt{\bool}{x}{\ind_\bool(\labst{y}{\rec_\bool(\UV,A,B,y)}, a, b, x)},$$
+which we can shorten without harm to
+$$(a,b) \jdef \ind_\bool(\labst{y}{\rec_\bool(\UV,A,B,y)}, a, b).$$
+Next we define $\ind_{A\times B}$.

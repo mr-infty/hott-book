@@ -53,5 +53,6 @@ header-includes:
 - \newcommand{\jdef}{:\equiv}
 - \newcommand{\Id}[3]{{#2}=_{#1} {#3}}
 - \DeclareMathOperator{\ap}{\mathsf{ap}}
+- \DeclareMathOperator{\funext}{\mathsf{funext}}
 - \newcommand{\ct}{\mathchoice{\mathbin{\raisebox{0.5ex}{$\displaystyle\centerdot$}}}{\mathbin{\raisebox{0.5ex}{$\centerdot$}}}{\mathbin{\raisebox{0.25ex}{$\scriptstyle\,\centerdot\,$}}}{\mathbin{\raisebox{0.1ex}{$\scriptscriptstyle\,\centerdot\,$}}}}
 ---

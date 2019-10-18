@@ -795,4 +795,92 @@ In summary:
 $$(a,b) \jdef \labstt{\bool}{x}{\ind_\bool(\labst{y}{\rec_\bool(\UV,A,B,y)}, a, b, x)},$$
 which we can shorten without harm to
 $$(a,b) \jdef \ind_\bool(\labst{y}{\rec_\bool(\UV,A,B,y)}, a, b).$$
-Next we define $\ind_{A\times B}$.
+
+Next, we define $\ind_{A\times B}$. Abbreviating
+$$\Gamma \jdef A,B : \UV, C : A\times B \rto \UV, g : \prod_{a:A,b:B}
+C((a,b)),$$
+we'd like to construct
+\begin{align*}
+\text{(0)} && \Gamma, p : A\times B \vdash \ttt{?ind}_{A\times B}(C,g,p) : C(p) &&
+\end{align*}
+of course by using the definition $A\times B \equiv \prod_{x:\bool}
+\rec_\bool(\UV,A,B,x)$.
+
+However, this is precisely the point where things go (slightly) wrong and we
+get stuck. The problem is that---in contrast to $\Sigma$-types---the
+elimination principle (i.e. induction) for $\Pi$-types is not about
+constructing functions out from them. So there is no obvious way to inhabit
+$C(p)$ for arbitrary $p : A\times B$ given only $g(a)(b) : C((a,b))$ for $a
+: A$, $b : B$.
+
+The missing ingredient---and the thing that causes us only to get the
+definitional equality propositionally---is the (propositional) uniqueness
+principle $\UniqProd{A}{B}$ for products---which we yet have to construct.
+
+But before we can define $\UniqProd{A}{B}$, we need to introduce the *projections*. To plug
+\begin{align*}
+\text{(0)} && A,B : \UV, p : A\times B \vdash \ttt{?pr}_1(p) : A, && \\
+\intertext{we rewrite it as}
+\text{(0)} && A,B : \UV, p : \prod_{x:\bool} \rec_\bool(\UV,A,B,x) \vdash \ttt{?pr}_1(p) : A && \\
+\intertext{and further as}
+\text{(0)} && A,B : \UV, p : \prod_{x:\bool} \rec_\bool(\UV,A,B,x) \vdash \ttt{?pr}_1(p) : \rec_\bool(\UV,A,B,\bfalse), && \\
+\intertext{and then see that}
+\text{(0)} && A,B : \UV, p : \prod_{x:\bool} \rec_\bool(\UV,A,B,x) \vdash p(\bfalse) : \rec_\bool(\UV,A,B,\bfalse) && \text{$\Pi$-ELIM on (-1)} \\
+\text{(-1)} && A,B : \UV, p : \prod_{x:\bool} \rec_\bool(\UV,A,B,x) \vdash p : \prod_{x : \bool} \rec_\bool(\UV,A,B,\bfalse) && \text{by Vble} \\
+\intertext{does the trick.}
+\end{align*}
+
+Thus
+\begin{align*}
+\pr_1(p) & \jdef p(\bfalse) \\
+\intertext{and similarly}
+\pr_2(p) & \jdef p(\btrue).
+\end{align*}
+
+Now we can try to define the propositional uniqueness principle^[The use of the word "principle" is unfortunate since we don't really talk about a concept but rather about the *re-ification* of that concept. Perhaps a better name would be "uniqator".] $\uniq_{A\times B}$.
+By definition,
+\begin{align*}
+\text{(0)} && A,B : \UV, p : A \times B \vdash \ttt{?uniq}_{A\times B}(p)
+: (\pr_1(p),\pr_2(p)) =_{A\times B} p && 
+\intertext{can be rewritten as}
+\text{(0)} && A,B : \UV, p : \prod_{x : \bool} \rec_\bool(\UV,A,B,x) \vdash && \\
+&& \ttt{?uniq}_{A\times B}(p)
+: \ind_\bool(\labst{y}{\rec_\bool(\UV,A,B,y)},p(\bfalse),p(\btrue)) =_{A\times B} p. &&
+\end{align*}
+The two dependent functions appearing in that equality type are
+easily seen to be pointwise extensionally equal; indeed, the defining equation
+for $\ind_\bool$ gives us
+   $$\ind_\bool(\labst{y}{\rec_\bool(\UV,A,B,y)},p(\bfalse),p(\btrue))(\bfalse)
+   \equiv p(\bfalse),$$
+and similarly for the evaluation at $\btrue$. If we had judgemental function
+extensionality, we could therefore conclude that the two are equal
+judgementally, and could plug $\ttt{?uniq}_{A\times B}(p)$ using
+reflexivity. However we don't, and therefore we have to use propositional
+function extensionality
+$$\funext : \prod_{A : \UV} \prod_{B : A \rto \UV} \prod_{f,g : \prod_{x
+: A} B(x)} \left(\prod_{x : A} f(x)
+=_{B(x)} g(x) \right) \rto f =_{\prod_{x : A}B(x)} g.$$
+Thus we put
+$$\begin{split}\ttt{uniq}_{A\times B}(p) \jdef \funext(&\bool, \\
+& \labst{y}{\rec_\bool(\UV,A,B,y)}, \\ 
+& \ind_\bool(\labst{y}{\rec_\bool(\UV,A,B,y)},p(\bfalse),p(\btrue)), p \\
+& \labst{y}{\refl_{p(y)}}).\end{split}$$
+
+Given propositional uniqueness, induction for products is easy to define. We
+plug
+\begin{align*}
+\text{(0)} && \Gamma, p : A\times B \vdash \ttt{?ind}_{A\times B}(C,g,p) : C(p) && \\
+\intertext{by transporting}
+\text{(-1)} && \Gamma, p : A\times B \vdash g(\pr_1(p),\pr_2(p))
+: C((\pr_1(p),\pr_2(p))) && \\
+\intertext{along the equality}
+\text{(-2)} && \Gamma, p : A\times B \vdash \UniqProd{A}{B}(p) : (\pr_1(p),\pr_2(p)) =_{A\times B} p, && \\
+\intertext{as in}
+\text{(0)} && \Gamma, p : A\times B \vdash \tp^C(\UniqProd{A}{B}(p), g(\pr_1(p),\pr_2(p))) : C(p). &&
+\end{align*}
+
+Now that we have defined induction, let us now finally verify the definitional
+equality for it---propositionally. To plug
+\begin{align*}
+\text{(0)} && \Gamma, a : A, b : B \vdash \ttt{?comp}(A,B,C,g,a,b) : \IndProd{A}{B}(C,g,(a,b)) =_{C((a,b))} g(a,b), && \\
+\end{align*}

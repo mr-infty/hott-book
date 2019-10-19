@@ -54,5 +54,9 @@ header-includes:
 - \newcommand{\Id}[3]{{#2}=_{#1} {#3}}
 - \DeclareMathOperator{\ap}{\mathsf{ap}}
 - \DeclareMathOperator{\funext}{\mathsf{funext}}
+- \DeclareMathOperator{\isequiv}{\mathsf{is-equiv}}
+- \DeclareMathOperator{\happly}{\mathsf{happly}}
+- \newcommand{\indid}[1]{\ind_{=_{#1}}}
+- \newcommand{\indidb}[1]{\ind_{=_{#1}}'}
 - \newcommand{\ct}{\mathchoice{\mathbin{\raisebox{0.5ex}{$\displaystyle\centerdot$}}}{\mathbin{\raisebox{0.5ex}{$\centerdot$}}}{\mathbin{\raisebox{0.25ex}{$\scriptstyle\,\centerdot\,$}}}{\mathbin{\raisebox{0.1ex}{$\scriptscriptstyle\,\centerdot\,$}}}}
 ---

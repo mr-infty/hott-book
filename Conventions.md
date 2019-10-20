@@ -65,6 +65,21 @@
   also as
   $$\labstt{\N}{n}{\labstt{\N}{m}{(+)(n,m).}}$$
 
+* When viewed as *implicit*, function arguments are suppressed in the notation.
+
+  For example, instead of
+  $$\happly(A,B, f, g, \funext(A, B, f, g, h))$$
+  we may write
+  $$\happly(\funext(h))$$
+  instead.
+  
+  We might also---instead of completely suppressing it in the notation---replace
+  an implicit argument with an underscore, especially if confusion might arise
+  otherwise.
+
+  In the previous example, we might therefore also have written
+  $$\happly(\_, \_, \_, \_, \funext(\_, \_, \_, \_, h)).$$
+
 # On holes
 
 The concept of a "hole" is crucial for the practicality of programming in

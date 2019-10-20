@@ -883,4 +883,71 @@ Now that we have defined induction, let us now finally verify the definitional
 equality for it---propositionally. To plug
 \begin{align*}
 \text{(0)} && \Gamma, a : A, b : B \vdash \ttt{?comp}(A,B,C,g,a,b) : \IndProd{A}{B}(C,g,(a,b)) =_{C((a,b))} g(a,b), && \\
+\intertext{we first expand the definition:}
+\text{(0)} && \Gamma, a : A, b : B \vdash \ttt{?comp}(A,B,C,g,a,b) : \tp^C(\UniqProd{A}{B}((a,b)), g(\pr_1((a,b)),\pr_2((a,b)))) && \\
+&& =_{C((a,b))} g(a,b). && \\
+\intertext{Next, we remark that we have the judgemental equalities
+$$\pr_1((a,b)) \equiv a,\quad \pr_2((a,b)) \equiv b,$$
+and therefore we can simplify this to}
+\text{(0)} && \Gamma, a : A, b : B \vdash \ttt{?comp}(A,B,C,g,a,b) : \tp^C(\UniqProd{A}{B}((a,b)), g(a,b)) && \\
+&& =_{C((a,b))} g(a,b). &&
+\end{align*}
+Here we used that judgemental equality is a congruence relation with
+respect to eliminators (function application, more specifically)\footnote{This
+is \textit{not} explicitly assumed as a rule in Appendix A.2; see \texttt{Issues.md}.
+However, that's clearly a rule you want to have in any reasonable type
+theory.}.
+
+Now for that same reason, the uniqator
+$$\UniqProd{A}{B}((a,b)) : (\pr_1((a,b)), \pr_2((a,b))) =_{A\times B} (a,b)$$
+on a literal pair $(a,b)$ is actually of type $(a,b) =_{A\times B} (a,b)$, and
+so you might hope that it's actually judgementally equal to $\refl_{(a,b)}$.
+
+Unfortunately, things are a lot messier than that thanks to the way function
+extensionality works in type theory. Namely, that axiom is a(n) (assumed) term
+of type $\isequiv(\happly(A,B,f,g,\--))$, where
+$$\happly: \prod_{A : \UV} \prod_{B : A \rto \UV} \prod_{f,g : \prod_{x
+: A} B(x)} f =_{\prod_{x : A}B(x)} g \rto \left(\prod_{x : A} f(x)
+=_{B(x)} g(x) \right)$$ 
+is the obvious "point-wise evaluation" function; in particular, the datum of
+that axiom gives us the \textit{quasi-inverse} $\funext$, i.e. besides
+$\funext$ we are also given two witnesses
+$$\begin{split}\phi:& \prod_{A : \UV} \prod_{B : A \rto \UV} \prod_{f,g : \prod_{x : A} B(x)}
+\prod_{h : \prod_{x : A} f(x) =_{B(x)} g(x)} \\
+& \happly(A,B,f,g, \funext(A,B,f,g, h)) =_{\prod_{x : A} f(x) =_{B(x)} g(x)} h\end{split}$$
+and
+$$\begin{split}\psi: & \prod_{A : \UV} \prod_{B : A \rto \UV} \prod_{f,g : \prod_{x : A} B(x)}
+\prod_{p : f =_{\prod_{x : A} B(x)} g} \\
+& p =_{\prod_{x : A} B(x)} \funext(A,B,f,g, \happly(A,B,f,g, p))\end{split}$$
+that exhibit $\funext(A,B,f,g,\--)$ and $\happly(A,B,f,g,\--)$ as
+quasi-inverses of each other.
+
+Adopting the convention of viewing redundant arguments as "implicit" and
+suppressing them in the notation, the previous expressions look more
+palatable\footnote{This hopefully illustrates the \textit{absolute necessity}
+(as well as power) of having ``implicit arguments''/``elaboration'' in formal proof languages.}:
+
+\begin{align*}
+\phi & : \prod_{h : \prod_{x : A} f(x) = g(x)} \happly(\funext(h)) = h \\
+\psi & : \prod_{p : f = g} p = \funext(\happly(p)).
+\end{align*}
+
+To be explicit, the "obvious" definition of
+$$\happly : \prod_{f,g : \prod_{x : A} B(x)} f = g \rto \prod_{x : A} f(x)
+= g(x)$$ is given in terms of path induction $\indid{}$, as follows^[Where we
+have left a few arguments implicit for better readability.]:
+$$\happly(f,g,h) \jdef \indid{}(\_, \labst{f}{\labst{x}{\refl_{f(x)}}}, f,g, h).$$
+In particular, we have
+$$\happly(f,f,\refl_f) \equiv \labst{x}{\refl_{f(x)}},$$
+and so the second witness $\psi$ gives us
+$$\psi(f,f,\refl_f) : \refl_f = \funext(f, f, \labst{x}{\refl_{f(x)}}).$$
+Remembering the definition of $\UniqProd{A}{B}$ in terms of $\funext$, it
+therefore follows that
+$$\psi((a,b), (a,b), \refl_{(a,b)}) : \refl_{(a,b)} = \UniqProd{A}{B}((a,b)).$$
+
+We can now come back to the problem of constructing the propositional
+definitional equality for our product:
+\begin{align*}
+\text{(0)} && \Gamma, a : A, b : B \vdash \ttt{?comp}(A,B,C,g,a,b) && \\
+&& : \tp^C(\UniqProd{A}{B}((a,b)), g(a,b)) =_{C((a,b))} g(a,b). &&
 \end{align*}

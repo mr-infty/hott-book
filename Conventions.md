@@ -80,6 +80,23 @@
   In the previous example, we might therefore also have written
   $$\happly(\_, \_, \_, \_, \funext(\_, \_, \_, \_, h)).$$
 
+* To explicitly indicate that an argument to a function is normally treated as
+  implicit, we surround it using curly braces $\{$, $\}$ in the type declaration.
+
+  For example, to indicate that the arguments $A$ and $B$ in
+
+  $$\mathsf{ev}: \prod_{A : \UV} \prod_{B : A \rto UV} \prod_{a : A} \prod_{f : \prod_{x : A} B(x)} B(a)$$
+
+  are implicit, we would write 
+
+  $$\mathsf{ev}: \prod_{\{A : \UV\}} \prod_{\{B : A \rto UV\}} \prod_{a : A} \prod_{f : \prod_{x : A} B(x)} B(a)$$
+
+  or even
+
+  $$\mathsf{ev}: \left\{\prod_{A : \UV}\right\} \left\{\prod_{B : A \rto UV}\right\} \prod_{a : A} \prod_{f : \prod_{x : A} B(x)} B(a)$$
+
+  if convenient.
+
 # On holes
 
 The concept of a "hole" is crucial for the practicality of programming in

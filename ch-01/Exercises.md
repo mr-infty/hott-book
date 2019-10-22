@@ -949,5 +949,29 @@ We can now come back to the problem of constructing the propositional
 definitional equality for our product:
 \begin{align*}
 \text{(0)} && \Gamma, a : A, b : B \vdash \ttt{?comp}(A,B,C,g,a,b) && \\
-&& : \tp^C(\UniqProd{A}{B}((a,b)), g(a,b)) =_{C((a,b))} g(a,b). &&
+&& : \tp^C(\UniqProd{A}{B}((a,b)), g(a,b)) =_{C((a,b))} g(a,b). && \\
+\intertext{It's obvious that we need to use ``action on paths'' on the function $\tp^C$ and the equality derived above to replace $\UniqProd{A}{B}((a,b))$ by $\refl_{(a,b)}$; however, because in the term
+$$\tp^C(\UniqProd{A}{B}((a,b)),g(a,b)) \equiv \tp^C(\UniqProd{A}{B})(g(a,b))$$
+the function $\tp^C(\UniqProd{A}{B})$ is further evaluted, it's not sufficient to use path action once, instead, we must use it twice, as follows. First, we have}
+\text{(-1)} && \Gamma, a : A, b : B \vdash \ap_{\tp^C}(\psi((a,b),\_, \refl))
+&& \\
+&& : \tp^C(\refl_{(a,b)}, g(a,b)) = \tp^C(\UniqProd{A}{B}((a,b)), g(a,b)). && \\
+\intertext{Using the evaluation function
+$$\ev : \prod_{\{A : \UV\}} \prod_{\{B : A \rto UV\}} \prod_{a : A} \prod_{f : \prod_{x : A} B(x)} B(a)$$
+(obviously defined as $\ev(a)(f) \jdef f(a)$), we can derive from this then the
+desired equality:}
+\text{(-0.5)} && \Gamma, a : A, b : B \vdash
+\ap_{\ev(g(a,b))}(\ap_{\tp^C}(\psi((a,b), \_, \refl))) && \\
+&& : \tp^C(\refl_{(a,b)}, g(a,b)) = \tp^C(\UniqProd{A}{B}((a,b)), g(a,b)). &&
+\text{from (-1)} \\
+\intertext{Hence we can expand the hole as}
+\text{(0)} && \Gamma, a : A, b : B \vdash \ap_{\ev(g(a,b))}(\ap_{\tp^C}(\psi((a,b),\_, \refl)))^{-1} \ct \Box && \\
+&& : \tp^C(\UniqProd{A}{B}((a,b)), g(a,b)) =_{C((a,b))} g(a,b) && \text{by
+(-0.5) and (-2)} \\
+\text{(-2)} && \Gamma, a : A, b : B \vdash \Box && \\
+&& : \tp^C(\refl_{(a,b)}, g(a,b)) =_{C((a,b))} g(a,b). && \\
+\intertext{But now we have $\tp^C(\refl_{(a,b)}) \equiv \idfun$ by definition,
+and so we can fill this hole using refl:}
+\text{(-2)} && \Gamma, a : A, b : B \vdash \refl_{g(a,b))} && \\
+&& : g(a,b) =_{C((a,b))} g(a,b). &&
 \end{align*}

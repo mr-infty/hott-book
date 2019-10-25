@@ -55,9 +55,12 @@ header-includes:
 - \DeclareMathOperator{\ap}{\mathsf{ap}}
 - \DeclareMathOperator{\funext}{\mathsf{funext}}
 - \DeclareMathOperator{\isequiv}{\mathsf{is-equiv}}
+- \DeclareMathOperator{\iscontr}{\mathsf{is-contr}}
 - \DeclareMathOperator{\happly}{\mathsf{happly}}
 - \DeclareMathOperator{\ev}{\mathsf{ev}}
 - \DeclareMathOperator{\idfun}{\mathsf{id}}
+- \DeclareMathOperator{\fps}{\mathsf{FP}}
+- \DeclareMathOperator{\bps}{\mathsf{BP}}
 - \newcommand{\indid}[1]{\ind_{=_{#1}}}
 - \newcommand{\indidb}[1]{\ind_{=_{#1}}'}
 - \newcommand{\ct}{\mathchoice{\mathbin{\raisebox{0.5ex}{$\displaystyle\centerdot$}}}{\mathbin{\raisebox{0.5ex}{$\centerdot$}}}{\mathbin{\raisebox{0.25ex}{$\scriptstyle\,\centerdot\,$}}}{\mathbin{\raisebox{0.1ex}{$\scriptscriptstyle\,\centerdot\,$}}}}

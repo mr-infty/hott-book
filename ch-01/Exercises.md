@@ -975,3 +975,109 @@ and so we can fill this hole using refl:}
 \text{(-2)} && \Gamma, a : A, b : B \vdash \refl_{g(a,b))} && \\
 && : g(a,b) =_{C((a,b))} g(a,b). &&
 \end{align*}
+
+## Exercise 1.7
+> Give an alternative derivation of $\indidb{A}$ from $\indid{A}$ which avoids
+> the use of universes. *(This is easiest using concepts from later chapters.)*
+
+* * *
+So we want to define
+$$\indidb{}: \prod_{A : \UV} \prod_{a : A} \prod_{C : \prod_{x : A} (a =_A x)
+\rto \UV} C(a,\refl_a) \rto \prod_{x : A} \prod_{p : a =_A x} C(x,p)$$
+given
+$$\indid{}: \prod_{A : \UV} \prod_{C : \prod_{x,y : A} (x =_A y) \rto \UV}
+\left(\prod_{x : A} C(x,x,\refl_x)\right) \rto \prod_{x,y : A} \prod_{p : x =_A
+y} C(x,y,p).$$
+In the book ($\textsection$ 1.12.2) there is already given a solution to this problem, however, this
+involves the use of universes, more precisely, it requires the existence of two
+universes $\UV_i : \UV_{i+1}$. Here it is asked to give a solution without the
+use of universes, i.e. with the use of only one universe.
+
+This alternative construction is also already sketched in loc. cit., but before
+we embark on filling in the details, it is perhaps more wholesome to discuss
+the intuitive meaning of the principles of based and unbased path induction in
+the first place.
+
+Namely, those principles are equivalent to the contractibility of certain
+spaces^[I'm just going to use the word "space" to refer to types whenever I feel
+like it.]. The idea is that the two induction principles allow you to define
+a dependent function on a certain space by giving its definition only on one
+point (for based path induction) or a subspace (for unbased path induction).
+Assuming a general principle of homotopy invariance that homotopy equivalent
+spaces should be *indiscernable* (more precisely, that type
+families are fibrations; see $\textsection$ 2.3), these induction principles
+should therefore follow from the contractibility of that space (for based path
+induction) resp. from the existence of a deformation retraction onto that
+subspace (for unbased path induction).
+
+Let us explain that in detail.
+Given a type $A : \UV$, we have naturally associated to it its (*free*) *path space*
+$$\fps_A \jdef \sum_{x,y : A} x =_A y.$$
+If in addition given a term $a : A$, we have the *based path space*
+$$\bps_{A,a} \jdef \sum_{x : A} a =_A x.$$
+The free path space fits into a natural diagram^[Types together with
+non-dependent functions modulo judgemental equality "obviously" form
+a category, at least morally.]
+$$\begin{xy} \xymatrix{ \fps_A \ar@<3pt>[r]^{\pi} & \ar@<3pt>[l]^{\Delta}
+A } \end{xy}$$
+where $\pi: \fps_A \rto A$ is the projection onto the first component, sending
+a dependent triple $(x,y,p)$ to $x$, and where $\Delta$ is the "diagonal
+embedding", sending $x : A$ to $(x,x,\refl_x)$.
+
+To be exact,
+\begin{align*}
+\pi & \jdef \labstt{p}{\sum_{x : A} \sum_{y : A} x =_A y}{\pr_1(p)} \\
+\Delta & \jdef \labstt{x}{A}{(x, (x, \refl_x)).}
+\end{align*}
+
+The definitional equality $\pr_1(a,b) \equiv a$ for $\Sigma$-types immediately
+gives that $(\pi \circ \Delta)(x) \equiv x$ for $x : A$, and therefore that
+$$\labst{x}{\refl_x} : \pi \circ \Delta \sim \idfun_A.$$
+
+We would like to claim that also $\Delta \circ \pi \sim \idfun$ is inhabited, thus
+making $\pi$ and $\Delta$ into quasi-inverse homotopy equivalences, however
+that is not as trivial as $\pi \circ \Delta \sim \idfun$. Instead, we claim the
+following.
+
+\begin{lemma}
+Given path transport for type families (Lemma 2.3.1), the existence of path
+induction $\indid{A}$ for $A$ is equivalent to $\Delta \circ \pi \sim \idfun$.
+\end{lemma}
+\begin{proof}
+Just as a reminder, under the Curry-Howard correspondence between types and
+propositions, the proposition $A \Leftrightarrow B$ corresponds to the type $(A
+\rto B) \times (B \rto A)$, i.e. to say that $A$ and $B$ are equivalent amounts
+to give maps in both directions.
+
+Let us begin by showing ``$\Rightarrow$'', i.e. by constructing a map
+$$\left(\prod_{C : \prod_{x,y : A} (x =_A y) \rto \UV}
+\left(\prod_{x : A} C(x,x,\refl_x)\right) \rto \prod_{x,y : A} \prod_{p : x =_A
+y} C(x,y,p)\right) \rto (\Delta \circ \pi \sim \idfun).$$
+Let $J$ be of type that-huge-expression-on-the-lhs and let
+$$C \jdef \labstt{x}{A}{\labstt{y}{A}{\labstt{p}{x =_A y}{(\Delta\circ \pi)((x,y,p)) =_{\fps_A} (x,y,p)}}}.$$
+Then $C : \prod_{x,y : A} (x =_A y) \rto UV$, and since
+$$(\Delta \circ \pi)(x,x,\refl_x) \equiv \Delta(\pi((x,x,\refl_x))) \equiv
+\Delta(x) \equiv (x,x,\refl_x),$$
+it follows that
+$$J(C,\labstt{x}{A}{\refl_{(x,x,\refl_x)}}) : \prod_{x,y : A} \prod_{p : x=_A y}
+(\Delta \circ \pi)((x,y,p)) =_{\fps_A} (x,y,p),$$
+and hence\footnote{It is a bit awkward to have to be so explicit about the equivalence
+between functions in one variable $w : \fps_A$ and functions in three
+variables $x:A$, $y:A$, $p : x=_A y$, but I don't see a way around it.}
+$$\labstt{w}{\fps_A}{J(C,\labstt{x}{A}{\refl_{(x,x,\refl_x)}})(\pr_1(w),\pr_1(\pr_2(w)),
+\pr_2(\pr_2(w)))} : \Delta \circ \pi \sim \idfun.$$
+
+Let us now prove the perhaps more interesting direction ``$\Rightarrow$''. Let
+$$\phi : \Delta \circ \pi \sim \idfun,$$
+and let further
+\begin{align*}
+C & : \prod_{x,y : A} (x =_A y) \rto \UV \\
+c & : \prod_{x : A} C(x,x,\refl_x)
+\end{align*}
+be given. Then we an apply Lemma 2.3.1 to the type family $C'$ given by
+$$C' \jdef \labstt{w}{\fps_A}{C(\pr_1(w),\pr_1(\pr_2(w)), \pr_2(\pr_2(w)))}$$
+and the path
+$$\phi((x,y,p)) : (x,x,\refl_x) =_{\fps_A} (x,y,p)$$
+to get that
+$$\tp^{C'}(\phi((x,y,p)), c(x)) : C'((x,y,p)) \equiv C(x,y,p).$$
+\end{proof}

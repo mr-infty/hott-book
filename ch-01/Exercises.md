@@ -1013,7 +1013,10 @@ subspace (for unbased path induction).
 Let us explain that in detail.
 Given a type $A : \UV$, we have naturally associated to it its (*free*) *path space*
 $$\fps_A \jdef \sum_{x,y : A} x =_A y.$$
-If in addition given a term $a : A$, we have the *based path space*
+If in addition we assume\footnote{I'd like to say ``we are given a term $a
+: A$ \ldots'' here, but that would make a meta-theoretical existence statement,
+whereas this sentence is only meant to introduce a variable into the context.}
+$a : A$, we have the *based path space*
 $$\bps_{A,a} \jdef \sum_{x : A} a =_A x.$$
 The free path space fits into a natural diagram^[Types together with
 non-dependent functions modulo judgemental equality "obviously" form
@@ -1046,8 +1049,8 @@ induction $\indid{A}$ for $A$ is equivalent to $\Delta \circ \pi \sim \idfun$.
 \begin{proof}
 Just as a reminder, under the Curry-Howard correspondence between types and
 propositions, the proposition $A \Leftrightarrow B$ corresponds to the type $(A
-\rto B) \times (B \rto A)$, i.e. to say that $A$ and $B$ are equivalent amounts
-to give maps in both directions.
+\rto B) \times (B \rto A)$, i.e. to say that $A$ and $B$ `are' equivalent amounts
+to giving maps in both directions.
 
 Let us begin by showing ``$\Rightarrow$'', i.e. by constructing a map
 $$\left(\prod_{C : \prod_{x,y : A} (x =_A y) \rto \UV}
@@ -1081,3 +1084,100 @@ $$\phi((x,y,p)) : (x,x,\refl_x) =_{\fps_A} (x,y,p)$$
 to get that
 $$\tp^{C'}(\phi((x,y,p)), c(x)) : C'((x,y,p)) \equiv C(x,y,p).$$
 \end{proof}
+
+As expected, there is a corresponding lemma for based path induction. The
+diagram we need to consider there is
+$$\begin{xy} \xymatrix{ \bps_{A,a} \ar@<3pt>[r]^{\pi'} & \ar@<3pt>[l]^{\Delta_a} \unit,} \end{xy}$$
+where
+\begin{align*} \pi' & \jdef \labstt{x}{\bps_{A,a}}{\unitel} \\
+\Delta_a & \jdef \ind_{\unit}(\labstt{x}{\unit}{\bps_{A,a}}, (a,\refl_a)).
+\end{align*}
+Again we have $\pi' \circ \Delta_a \sim \idfun$, however this time it's not simply
+given by $\labst{x}{\refl_x}$. Instead, since
+$(\pi' \circ \Delta_a)(x) \equiv \unitel$
+independent of $x:\unit$, we use $\unit$-induction to construct a term of type
+$$(\pi \circ \Delta_a) \sim \idfun \ \equiv\ \prod_{x:\unit} (\unitel =_{\unit} x),$$
+namely
+$$\ind_{\unit}(\labstt{x}{\unit}{(\unitel =_\unit x)},\ \refl_\unitel)
+: \prod_{x:\unit} (\unitel =_\unit x).$$
+
+\begin{lemma}
+   Given path transport for type families, the existence of based path
+   induction $\indidb{A}(a)$ for $A$ and basepoint $a : A$ is equivalent to
+   $\Delta_a \circ \pi' \sim \idfun$.
+\end{lemma}
+\begin{proof}Again, we begin with ``$\Rightarrow$'', assuming a variable\footnote{I'm
+tempted to write here ``assuming the existence of a term $J$ of type \ldots'', but that would make a meta-theoretical statement about the existence of a term, which is different from introducing a variable of the mentioned type into the context. In particular, in that case $J$ would be a meta variable, whereas it is an object variable in our case.} $J$ of
+type
+$$\prod_{C : \prod_{x:A} (a=_A x) \rto \UV} C(a,\refl_a) \rto \prod_{x : A}
+\prod_{p : a =_A x} C(x,p).$$
+Now
+$$(\Delta_a \circ \pi')((x,p)) \equiv (a,\refl_a),$$
+hence constructing $\phi : \Delta_a \circ \pi' \sim \idfun$ amounts to
+$$\phi(w) : (a,\refl_a) =_{\bps_{A,a}} w$$
+for $w : \bps_{A,a}$. Now luckily, we have
+   $$w \equiv (\pr_1(w),\pr_2(w)),$$
+   so that it suffices to construct
+   $$\psi : \prod_{x : A} \prod_{p : (a =_A x)} (a,\refl_a) =_{\bps_{A,a}}
+   (x,p).$$
+   Using $J$, we can fulfill this by putting
+   $$\psi \jdef J(\labstt{x}{A}{\labstt{p}{a =_A x}{(a,\refl_a) =_{\bps_{A,a}}
+   (x,p)}},\ \refl_{(a,\refl_a)}).$$
+
+   Next, we prove ``$\Leftarrow$''. Given $\phi : \Delta_a \circ \pi' \sim
+   \idfun$, we first deduce
+   $$\psi : \prod_{x : A} \prod_{p : a =_A x} (a,\refl_a) =_{\bps_{A,a}}
+   (x,p)$$
+   and then define $J$ by
+   $$J(C, c) \jdef \tp^C(\psi(x,p), c).$$
+\end{proof}
+
+\begin{rmk}
+   The proposition\footnote{I'm using the term \textit{proposition} just as
+   a synonym for type here; in particular, I don't claim any truncatedness.}
+   $\Delta_a \circ \pi' \sim \idfun$ implies in particular that
+   $\iscontr(\bps_{A,a})$. The reverse also holds (by an easy argument), i.e.
+   $$\Delta_a \circ \pi' \sim \idfun \quad \Leftrightarrow\quad
+   \iscontr(\bps_{A,a}).$$
+\end{rmk}
+
+Given the two lemmas above, we can translate the task of deducing based path
+induction $\indidb{A}$ from unbased path induction $\indid{A}$ to saying that
+in the (not necessarily strictly commutative) diagram
+
+$$\begin{xy} \xymatrix{ \fps_A \ar@<3pt>[rr]^{\pi} && \ar@<3pt>[ll]^\Delta A \\
+\bps_{A,a} \ar[u]^\iota \ar@<3pt>[rr]^{\pi'} && \ar@<3pt>[ll]^{\Delta_a} \unit
+\ar[u]_{\iota_a} } \end{xy}$$
+the existence of a homotopy $\Delta_a \circ \pi' \sim \idfun$ should follow
+from the existence of a homotopy $\Delta \circ \pi \sim \idfun$. Here,
+\begin{align*}
+   \iota & \jdef \labstt{w}{\bps_{A,a}}{(a, \pr_1(w), \pr_2)} \\
+   \iota_a & \jdef \ind_\unit(\labstt{x}{\unit}{A}, a).
+\end{align*}
+
+\begin{center} \textbf{--------- Geometric intution ---------} \end{center}
+
+Intuitively, this diagram is a pullback diagram, and we should be able to use
+the universal property of the pullback to construct for every $w \in
+\bps_{A,a}$ a path
+$$\left[0,1\right] \rightarrow \bps_{A,a}$$
+from $\Delta_a(\pi'(w))$ to $w$, using the path in $\fps_A$ from
+$\iota(\Delta_a(\pi'(w))) = \Delta(\pi(\iota(w)))$ to $\iota(w)$ given by the
+homotopy $\Delta \circ \pi \sim \idfun$. Unfortunately, that path has no reason to
+keep the first endpoint fixed, i.e. to stay in the subspace $\bps_{A,a}$.
+
+However, this can be fixed as follows. Given a path
+$$\gamma : (a,x,p) \rightarrow (a,a,\refl_a)$$
+with $\pr_1 \circ \gamma$ not necessarily constantly equal to $a$, we simply
+define $\gamma'$ by
+$$\gamma'(t) = (a,\ \pr_2(\gamma(t)),\ (\pr_1 \circ \gamma)(t\cdot (-)) \ct
+\pr_3(\gamma(t))),$$
+noting that $s \mapsto (\pr_1 \circ \gamma)(t \cdot s)$ is a path from $a$ to
+$\pr_1(\gamma(t))$ and that $\pr_3(\gamma(t))$ is a path from
+$\pr_1(\gamma(t))$ to $\pr_2(\gamma(t))$, so that the concatentation is
+well-defined.
+
+\begin{center} \textbf{--------- Geometric intution (end) ---------} \end{center}
+
+So far for the intuition about topological path spaces. Now let's turn that
+into an actual argument about identity types.

@@ -46,6 +46,7 @@ header-includes:
 - \newcommand{\UniqDProd}[2]{\uniq_{\SigmaType{#1}{#2}}}
 - \newcommand{\emptyt}{\mathbf{0}}
 - \newcommand{\unit}{\mathbf{1}}
+- \newcommand{\unitel}{\star}
 - \newcommand{\bool}{\mathbf{2}}
 - \newcommand{\btrue}{{1_{\bool}}}
 - \newcommand{\bfalse}{{0_{\bool}}}

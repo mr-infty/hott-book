@@ -1151,33 +1151,40 @@ $$\begin{xy} \xymatrix{ \fps_A \ar@<3pt>[rr]^{\pi} && \ar@<3pt>[ll]^\Delta A \\
 the existence of a homotopy $\Delta_a \circ \pi' \sim \idfun$ should follow
 from the existence of a homotopy $\Delta \circ \pi \sim \idfun$. Here,
 \begin{align*}
-   \iota & \jdef \labstt{w}{\bps_{A,a}}{(a, \pr_1(w), \pr_2)} \\
+   \iota & \jdef \labstt{w}{\bps_{A,a}}{(a, \pr_1(w), \pr_2(w))} \\
    \iota_a & \jdef \ind_\unit(\labstt{x}{\unit}{A}, a).
 \end{align*}
 
-\begin{center} \textbf{--------- Geometric intution ---------} \end{center}
+To prove this, we shall prove that this square is a *homotopy pullback square*,
+and moreover that homotopy pullbacks preserve homotopy equivalences. Since this
+makes sense in a very general context, let us introduce some (nonstandard) definitions.
 
-Intuitively, this diagram is a pullback diagram, and we should be able to use
-the universal property of the pullback to construct for every $w \in
-\bps_{A,a}$ a path
-$$\left[0,1\right] \rightarrow \bps_{A,a}$$
-from $\Delta_a(\pi'(w))$ to $w$, using the path in $\fps_A$ from
-$\iota(\Delta_a(\pi'(w))) = \Delta(\pi(\iota(w)))$ to $\iota(w)$ given by the
-homotopy $\Delta \circ \pi \sim \idfun$. Unfortunately, that path has no reason to
-keep the first endpoint fixed, i.e. to stay in the subspace $\bps_{A,a}$.
+\begin{defn} A \textbf{pre-category} $C$ consists of a diagram (of sets)
+$$\begin{xy} \xymatrix{ C_1 \times_{s,t} C_1 \ar[r]^{\circ} & C_1
+\ar@<10pt>[r]^s \ar@<-10pt>[r]_t & C_0 \ar[l]_{\id}
+} \end{xy}$$
+together with an equivalence relation $\sim_{x,y}$ on each hom-set
+$$\Hom_C(x,y) := s^{-1}(x) \cap t^{-1}(y)$$
+such that the collection of these equivalence relations are
+compatible with composition in the sense that
+\begin{align*}
+g_1 \sim_{x,y} g_2,\ f: y \rto z \quad & \Rightarrow \quad f\circ g_1 \sim_{x,z} f\circ g_2
+\\
+f_1 \sim_{y,z} f_2,\ g:x \rto y  \quad & \Rightarrow \quad f_1\circ g \sim_{x,z} f_2\circ g,
+\end{align*}
+and such that $C$ forms a category up to $\sim$ in the sense that
+\begin{align*}
+f: x \rto y \quad & \Rightarrow \quad \id_y \circ f \sim_{x,y} f \sim_{x,y}
+f \circ \id_x \\
+f: x \rto y,\ g : y \rto z,\ h: z \rto w \quad & \Rightarrow \quad h \circ (g \circ f) \sim_{x,w} (h \circ g) \circ f.
+\end{align*}
+Equivalently, this last condition can be rephrased as requiring that the
+\textbf{homotopy category} $h(C)$ associated to $C$, defined by
+\begin{align*}
+\op{Ob}(h(C)) & := C_0 \\
+\Hom_{h(C)}(x,y) & := \Hom_C(x,y)/_{\sim_{x,y}} \\
+[f] \circ [g] & := [f \circ g],
+\end{align*}
+is a category.
+\end{defn}
 
-However, this can be fixed as follows. Given a path
-$$\gamma : (a,x,p) \rightarrow (a,a,\refl_a)$$
-with $\pr_1 \circ \gamma$ not necessarily constantly equal to $a$, we simply
-define $\gamma'$ by
-$$\gamma'(t) = (a,\ \pr_2(\gamma(t)),\ (\pr_1 \circ \gamma)(t\cdot (-)) \ct
-\pr_3(\gamma(t))),$$
-noting that $s \mapsto (\pr_1 \circ \gamma)(t \cdot s)$ is a path from $a$ to
-$\pr_1(\gamma(t))$ and that $\pr_3(\gamma(t))$ is a path from
-$\pr_1(\gamma(t))$ to $\pr_2(\gamma(t))$, so that the concatentation is
-well-defined.
-
-\begin{center} \textbf{--------- Geometric intution (end) ---------} \end{center}
-
-So far for the intuition about topological path spaces. Now let's turn that
-into an actual argument about identity types.

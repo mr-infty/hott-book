@@ -12,6 +12,7 @@ header-includes:
 - \noop{\newtheorem{defn}[thm]{Definition}}
 - \noop{\newtheorem{rmk}[thm]{Remark}}
 - \noop{\newtheorem{cor}[thm]{Corollary}}
+- \noop{\newtheorem{propdef}[thm]{Proposition/Definition}}
 - \newcommand{\bbf}[1]{\mathds{#1}}
 - \newcommand{\op}[1]{\operatorname{#1}}
 - \newcommand{\N}{\bbf{N}}
@@ -24,6 +25,7 @@ header-includes:
 - \newcommand{\labst}[2]{\lambda{#1}.\ {#2}}
 - \newcommand{\labstt}[3]{\lambda ({#1}:{#2}).\ {#3}}
 - \DeclareMathOperator{\Hom}{Hom}
+- \DeclareMathOperator{\Term}{Term}
 - \DeclareMathOperator{\id}{id}
 - \DeclareMathOperator{\rec}{\mathsf{rec}}
 - \DeclareMathOperator{\ind}{\mathsf{ind}}

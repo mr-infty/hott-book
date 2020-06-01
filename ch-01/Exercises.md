@@ -1188,3 +1188,99 @@ Equivalently, this last condition can be rephrased as requiring that the
 is a category.
 \end{defn}
 
+The reason for introducing the notion of pre-category and its associated
+homotopy category is in order to be able to make the following definitions.
+
+\begin{defn} A morphism $f: x \rightarrow y$ in a pre-category $C$ is called
+a \textbf{homotopy equivalence} iff the morphism $[f]: x \rightarrow y$ in $h(C)$ is an isomorphism.
+
+A (not necessarily commutative) diagram
+$$\begin{xy} \xymatrix{ A \ar[r]^{f} & B \\ A' \ar[u]^\lambda \ar[r]^{f'} & B'
+\ar[u]_\rho } \end{xy}$$
+is called a \textbf{homotopy pullback square} iff the associated diagram
+$$\begin{xy} \xymatrix{ A \ar[r]^{[f]} & B \\ A' \ar[u]^{[\lambda]} \ar[r]^{[f']} & B'
+\ar[u]_{[\rho]} } \end{xy}$$
+in $h(C)$ is a pullback diagram (and so is commutative in particular).
+\end{defn}
+
+We now want to prove that terms together with non-dependent functions and
+the homotopy relation forms a pre-category. But in order to do this, we need to
+be able to talk more precisely about terms. Thus, we make the following
+definition.
+
+\begin{defn} Given a context $\Gamma$ and a type expression $A$, we
+let\footnote{The astute reader will have noticed that we slipped an
+unrestricted comprehension into our definition, i.e. the variable $t$ doesn't
+range over an existing set. The reason for this is that I don't want to bother
+with the technicality of talking about \textit{pre-expressions} or the like,
+something which is definitely necessary if you really want to formally define
+type theory.}
+$$\Term(\Gamma; A) := \left\{ t \ \ \vert\ \ \Gamma \vdash t : A \text{ is derivable} \right\} $$
+denote the set of all terms of type $A$ under the context $\Gamma$.
+\end{defn}
+
+\begin{thm} Given a context $\Gamma$ and a universe level $i$, the set
+$$C_1 := \coprod_{A,B \in \Term(\Gamma; \mathcal{U}_i)} \Term(\Gamma;
+A \rightarrow B)$$
+of function terms together with the two obvious projections to
+$$C_0 := \Term(\Gamma; \mathcal{U}_i),$$
+the composition of function terms given by
+$$f \circ g := \labst{x}{g(f(x))},$$
+the `identity section' $\id: C_0 \rightarrow C_1$ defined by
+$$\id(A) := \labst{x}{x},$$
+and the relation $\sim$ defined by
+$$f \sim_{A,B} f' :\Leftrightarrow \Term(\Gamma; f \sim f') \neq \emptyset$$
+forms a pre-category $\mathcal{T}_{\Gamma,i}$.
+\end{thm}
+
+\begin{proof}
+This follows easily from the derivation rules for function types.
+\end{proof}
+
+\begin{rmk}
+Instead of the homotopy relation, we could have also used judgemental equality
+in the above definition, which would have given us a different category.
+\end{rmk}
+
+\begin{lemma}\label{lem:homotopy_equiv_stable_under_homotopy_pb}
+If
+$$\begin{xy} \xymatrix{ A \ar[r]^{f} & B \\ A' \ar[u]^\lambda \ar[r]^{f'} & B'
+\ar[u]_\rho } \end{xy}$$
+is a homotopy pullback diagram in a pre-category $C$ and if $f$ is a homotopy
+equivalence, then $f'$ is a homotopy equivalence too.
+\end{lemma}
+\begin{proof}
+This follows immediately from the known fact that pullback squares in usual
+categories preserve isomorphisms.
+\end{proof}
+
+\begin{lemma}\label{lem:fp_bp_pullback}
+$$\begin{xy} \xymatrix{ \fps_A \ar[rr]^{\pi} && A \\
+\bps_{A,a} \ar[u]^\iota \ar[rr]^{\pi'} && \unit
+\ar[u]_{\iota_a} } \end{xy}$$
+is a homotopy pullback square in $\mathcal{T}_{\Gamma,i}$, where $i$ is an
+arbitrary fixed level and $\Gamma := A : \mathcal{U}_i$.
+\end{lemma}
+
+\begin{cor}\label{cor:fp_bp} In the diagram
+$$\begin{xy} \xymatrix{ \fps_A \ar@<3pt>[rr]^{\pi} && \ar@<3pt>[ll]^\Delta A \\
+\bps_{A,a} \ar[u]^\iota \ar@<3pt>[rr]^{\pi'} && \ar@<3pt>[ll]^{\Delta_a} \unit
+\ar[u]_{\iota_a} } \end{xy},$$
+the existence of a homotopy $\Delta \circ \pi \sim \idfun$ implies the existence of a homotopy $\Delta_a \circ \pi' \sim \idfun$.
+\end{cor}
+\begin{proof}
+The existence of a homotopy $\Delta \circ \pi \sim \idfun$ (together with the a priori existence of the identity homotopy $\pi \circ \Delta \sim \idfun$) implies that $\pi$ is a homotopy equivalence. By lemmas \ref{lem:fp_bp_pullback} and \ref{lem:homotopy_equiv_stable_under_homotopy_pb} it follows that $\pi'$ is also a homotopy equivalence, i.e. $[\pi']$ is an isomorphism in the homotopy category. But since $[\pi'] \circ [\Delta_a] = \idfun$, it follows that also $[\Delta_a] \circ [\pi'] = \idfun$ must hold, i.e. $\Term(\Gamma; \Delta_a \circ \pi' \sim \idfun)$ is non-empty.
+\end{proof}
+
+\begin{proof}[Proof of lemma \ref{lem:fp_bp_pullback}]
+TODO
+\end{proof}
+
+Unfortunately, corollary \ref{cor:fp_bp} is not enough to prove our desired
+result. Namely, we have merely proven that
+$$\Term(\Gamma; \Delta \circ \pi \sim \idfun) \neq \emptyset \Rightarrow
+\Term(\Gamma; \Delta_a \circ \pi' \sim \idfun) \neq \emptyset.$$
+However, what we really want to prove is that
+$$\Term(\Gamma; \Delta \circ \pi \sim \idfun \rto \Delta_a \circ \pi' \sim
+\idfun) \neq \emptyset;$$
+even better, we want to construct an explicit term of that type.
